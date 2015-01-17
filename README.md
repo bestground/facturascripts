@@ -1,2 +1,1 @@
-# facturascripts
-A fork of facturascript because we need some special characteristics
+This is a fork of facturascripts because I need some special options
