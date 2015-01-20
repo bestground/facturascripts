@@ -68,6 +68,11 @@ class albaran_cliente extends fs_model
    public $totalrecargo;
    public $observaciones;
    public $ptefactura;
+   // Nuevos campos
+   public $total_bruto;
+   public $importe_iva;
+   public $total_factura;
+   public $pago_senor;
    
    public function __construct($a=FALSE)
    {
@@ -121,6 +126,11 @@ class albaran_cliente extends fs_model
          $this->recfinanciero = floatval($a['recfinanciero']);
          $this->totalrecargo = floatval($a['totalrecargo']);
          $this->observaciones = $this->no_html($a['observaciones']);
+         // Nuevos campos
+         $this->total_bruto = floatval($a['total_bruto']);
+         $this->importe_iva = floatval($a['importe_iva']);
+         $this->total_factura = floatval($a['total_factura']);
+         $this->pago_senor = floatval($a['pago_senor']);
       }
       else
       {
@@ -159,6 +169,11 @@ class albaran_cliente extends fs_model
          $this->totalrecargo = 0;
          $this->observaciones = NULL;
          $this->ptefactura = TRUE;
+         // Nuevos campos
+         $this->total_bruto = 0;
+         $this->importe_iva = 0;
+         $this->total_factura = 0;
+         $this->pago_senor = 0;
       }
    }
    
@@ -387,6 +402,7 @@ class albaran_cliente extends fs_model
          $status = FALSE;
       }
       
+      /* CAMBIO
       if($status AND $duplicados)
       {
          /// comprobamos si es un duplicado
@@ -413,6 +429,7 @@ class albaran_cliente extends fs_model
             }
          }
       }
+      */
       
       return $status;
    }
@@ -446,6 +463,10 @@ class albaran_cliente extends fs_model
                recfinanciero = ".$this->var2str($this->recfinanciero).",
                totalrecargo = ".$this->var2str($this->totalrecargo).",
                observaciones = ".$this->var2str($this->observaciones).",
+               total_bruto = ".$this->var2str($this->total_bruto).",
+               importe_iva = ".$this->var2str($this->importe_iva).",
+               total_factura = ".$this->var2str($this->total_factura).",
+               pago_senor = ".$this->var2str($this->pago_senor).",
                ptefactura = ".$this->var2str($this->ptefactura)."
                WHERE idalbaran = ".$this->var2str($this->idalbaran).";";
             
@@ -458,7 +479,7 @@ class albaran_cliente extends fs_model
                codserie,codejercicio,codcliente,codpago,coddivisa,codalmacen,codpais,coddir,
                codpostal,numero,numero2,nombrecliente,cifnif,direccion,ciudad,provincia,apartado,
                fecha,hora,neto,total,totaliva,totaleuros,irpf,totalirpf,porcomision,tasaconv,
-               recfinanciero,totalrecargo,observaciones,ptefactura) VALUES
+               recfinanciero,totalrecargo,observaciones,total_bruto,importe_iva,total_factura,pago_senor,ptefactura) VALUES
                (".$this->var2str($this->idfactura).",
                ".$this->var2str($this->codigo).",".$this->var2str($this->codagente).",
                ".$this->var2str($this->codserie).",".$this->var2str($this->codejercicio).",
@@ -476,6 +497,8 @@ class albaran_cliente extends fs_model
                ".$this->var2str($this->totalirpf).",".$this->var2str($this->porcomision).",
                ".$this->var2str($this->tasaconv).",".$this->var2str($this->recfinanciero).",
                ".$this->var2str($this->totalrecargo).",".$this->var2str($this->observaciones).",
+               ".$this->var2str($this->total_bruto).",".$this->var2str($this->importe_iva).",
+               ".$this->var2str($this->total_factura).",".$this->var2str($this->pago_senor).",
                ".$this->var2str($this->ptefactura).");";
             
             if( $this->db->exec($sql) )

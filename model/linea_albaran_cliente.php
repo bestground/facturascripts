@@ -44,6 +44,13 @@ class linea_albaran_cliente extends fs_model
    private $codigo;
    private $fecha;
    
+   // nuevos campos
+   public $com_total;
+   public $com_porcentaje;
+   public $total_menos_comision;
+   public $com_iva;
+   public $neto_real;
+   
    private static $albaranes;
 
    public function __construct($l=FALSE)
@@ -69,6 +76,12 @@ class linea_albaran_cliente extends fs_model
          $this->pvpunitario = floatval($l['pvpunitario']);
          $this->irpf = floatval($l['irpf']);
          $this->recargo = floatval($l['recargo']);
+         // Nuevos campos
+         $this->com_total = floatval($l['com_total']);
+         $this->com_porcentaje = floatval($l['com_porcentaje']);
+         $this->total_menos_comision = floatval($l['total_menos_comision']);
+         $this->com_iva = floatval($l['com_iva']);
+         $this->neto_real = floatval($l['neto_real']);
       }
       else
       {
@@ -86,6 +99,12 @@ class linea_albaran_cliente extends fs_model
          $this->pvpunitario = 0;
          $this->irpf = 0;
          $this->recargo = 0;
+         // Nuevos campos
+         $this->com_total = 0;
+         $this->com_porcentaje = 0;
+         $this->total_menos_comision = 0;
+         $this->com_iva = 0;
+         $this->neto_real = 0;         
       }
    }
    
@@ -202,6 +221,8 @@ class linea_albaran_cliente extends fs_model
    
    public function test()
    {
+   		return TRUE;
+/*
       $this->descripcion = $this->no_html($this->descripcion);
       $total = $this->pvpunitario * $this->cantidad * (100 - $this->dtopor) / 100;
       $totalsindto = $this->pvpunitario * $this->cantidad;
@@ -220,6 +241,8 @@ class linea_albaran_cliente extends fs_model
       }
       else
          return TRUE;
+*/
+
    }
    
    public function save()
@@ -230,30 +253,39 @@ class linea_albaran_cliente extends fs_model
          if( $this->exists() )
          {
             $sql = "UPDATE ".$this->table_name." SET idalbaran = ".$this->var2str($this->idalbaran).",
-               referencia = ".$this->var2str($this->referencia).",
-               descripcion = ".$this->var2str($this->descripcion).",
-               cantidad = ".$this->var2str($this->cantidad).", dtopor = ".$this->var2str($this->dtopor).",
-               dtolineal = ".$this->var2str($this->dtolineal).",
-               codimpuesto = ".$this->var2str($this->codimpuesto).",
-               iva = ".$this->var2str($this->iva).", pvptotal = ".$this->var2str($this->pvptotal).",
-               pvpsindto = ".$this->var2str($this->pvpsindto).",
-               pvpunitario = ".$this->var2str($this->pvpunitario).",
-               irpf = ".$this->var2str($this->irpf).", recargo = ".$this->var2str($this->recargo)."
-               WHERE idlinea = '".$this->idlinea."';";
+            	com_total = ".$this->var2str($this->com_total).",
+            	com_porcentaje = ".$this->var2str($this->com_porcentaje).",
+            	total_menos_comision = ".$this->var2str($this->total_menos_comision).",
+            	com_iva = ".$this->var2str($this->com_iva).",
+            	neto_real = ".$this->var2str($this->neto_real).",
+               	referencia = ".$this->var2str($this->referencia).",
+               	descripcion = ".$this->var2str($this->descripcion).",
+               	cantidad = ".$this->var2str($this->cantidad).", dtopor = ".$this->var2str($this->dtopor).",
+               	dtolineal = ".$this->var2str($this->dtolineal).",
+               	codimpuesto = ".$this->var2str($this->codimpuesto).",
+               	iva = ".$this->var2str($this->iva).", pvptotal = ".$this->var2str($this->pvptotal).",
+               	pvpsindto = ".$this->var2str($this->pvpsindto).",
+               	pvpunitario = ".$this->var2str($this->pvpunitario).",
+               	irpf = ".$this->var2str($this->irpf).", recargo = ".$this->var2str($this->recargo)."
+               	WHERE idlinea = '".$this->idlinea."';";
          }
          else
          {
             $this->new_idlinea();
             $sql = "INSERT INTO ".$this->table_name." (idlinea,idalbaran,referencia,descripcion,
-               cantidad,dtopor,dtolineal,codimpuesto,iva,pvptotal,pvpsindto,pvpunitario,irpf,recargo)
+               cantidad,dtopor,dtolineal,codimpuesto,iva,pvptotal,pvpsindto,pvpunitario,com_total,com_porcentaje,total_menos_comision,com_iva,neto_real,irpf,recargo)
                VALUES (".$this->var2str($this->idlinea).",".$this->var2str($this->idalbaran).",
                ".$this->var2str($this->referencia).",".$this->var2str($this->descripcion).",
                ".$this->var2str($this->cantidad).",".$this->var2str($this->dtopor).",
                ".$this->var2str($this->dtolineal).",".$this->var2str($this->codimpuesto).",
                ".$this->var2str($this->iva).",".$this->var2str($this->pvptotal).",
                ".$this->var2str($this->pvpsindto).",".$this->var2str($this->pvpunitario).",
+               ".$this->var2str($this->com_total).",".$this->var2str($this->com_porcentaje).",
+               ".$this->var2str($this->total_menos_comision).",".$this->var2str($this->com_iva).",
+               ".$this->var2str($this->neto_real).",
                ".$this->var2str($this->irpf).",".$this->var2str($this->recargo).");";
          }
+
          return $this->db->exec($sql);
       }
       else

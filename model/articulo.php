@@ -53,6 +53,14 @@ class articulo extends fs_model
    public $codbarras;
    public $observaciones;
    
+   // Campos nuevos
+   public $dueno;
+   public $telefonodueno;   
+   public $tipodni;
+   public $fentrada;
+   public $fsalida;
+   
+      
    private $imagen;
    private $has_imagen;
    private $exists;
@@ -90,7 +98,13 @@ class articulo extends fs_model
          $this->equivalencia = $a['equivalencia'];
          $this->codbarras = $a['codbarras'];
          $this->observaciones = $this->no_html($a['observaciones']);
-         
+         // Campos nuevos
+         $this->dueno = $this->no_html($a['dueno']);
+         $this->telefonodueno = $a['telefonodueno'];
+         $this->tipodni = $a['tipodni'];
+		 $this->fentrada = Date('d-m-Y', strtotime($a['fentrada']));
+		 $this->fsalida = Date('d-m-Y', strtotime($a['fentrada']));
+		          
          /// no cargamos la imagen directamente por cuestión de rendimiento
          $this->imagen = NULL;
          $this->has_imagen = isset($a['imagen']);
@@ -121,6 +135,12 @@ class articulo extends fs_model
          $this->imagen = NULL;
          $this->has_imagen = FALSE;
          $this->exists = FALSE;
+         // Campos nuevos
+         $this->dueno = '';
+         $this->telefonodueno = '';
+         $this->tipodni = '';
+		 $this->fentrada = Date('d-m-Y');
+		 $this->fsalida = Date('d-m-Y');      
       }
       
       $this->pvp_ant = 0;
@@ -649,6 +669,13 @@ class articulo extends fs_model
                equivalencia = ".$this->var2str($this->equivalencia).",
                codbarras = ".$this->var2str($this->codbarras).",
                observaciones = ".$this->var2str($this->observaciones).",
+               
+               dueno = ".$this->var2str($this->dueno).",
+               telefonodueno= ".$this->var2str($this->telefonodueno).", 
+               tipodni = ".$this->var2str($this->tipodni).",
+ 			   fentrada = ".$this->var2str($this->fentrada).",
+			   fsalida = ".$this->var2str($this->fsalida).",          
+			        
                imagen = ".$this->bin2str($this->imagen)."
                WHERE referencia = ".$this->var2str($this->referencia).";";
          }
@@ -656,7 +683,7 @@ class articulo extends fs_model
          {
             $sql = "INSERT INTO ".$this->table_name." (referencia,codfamilia,descripcion,pvp,
                factualizado,costemedio,preciocoste,codimpuesto,stockfis,stockmin,stockmax,controlstock,destacado,bloqueado,
-               secompra,sevende,equivalencia,codbarras,observaciones,imagen,publico)
+               secompra,sevende,equivalencia,codbarras,dueno,fentrada,fsalida,tipodni,telefonodueno,observaciones,imagen,publico)
                VALUES (".$this->var2str($this->referencia).",".$this->var2str($this->codfamilia).",
                ".$this->var2str($this->descripcion).",".$this->var2str($this->pvp).",
                ".$this->var2str($this->factualizado).",".$this->var2str($this->costemedio).",".$this->var2str($this->preciocoste).",
@@ -665,6 +692,13 @@ class articulo extends fs_model
                ".$this->var2str($this->destacado).",".$this->var2str($this->bloqueado).",
                ".$this->var2str($this->secompra).",".$this->var2str($this->sevende).",
                ".$this->var2str($this->equivalencia).",".$this->var2str($this->codbarras).",
+              
+			   ".$this->var2str($this->dueno).",
+			   ".$this->var2str($this->fentrada).",
+			   ".$this->var2str($this->fsalida).",
+			   ".$this->var2str($this->tipodni).",
+			   ".$this->var2str($this->telefonodueno).",               
+               
                ".$this->var2str($this->observaciones).",".$this->bin2str($this->imagen).",
                ".$this->var2str($this->publico).");";
          }

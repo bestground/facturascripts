@@ -102,7 +102,7 @@
       <nombre>descripcion</nombre>
       <tipo>character varying(100)</tipo>
       <nulo>NO</nulo>
-   </columna>
+   </columna> 
    <columna>
       <nombre>codsubcuentairpfcom</nombre>
       <tipo>character varying(15)</tipo>
@@ -151,6 +151,22 @@
       <nulo>YES</nulo>
       <defecto>false</defecto>
    </columna>
+    <columna>
+      <nombre>dueno</nombre>
+      <tipo>character varying(50)</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
+     <nombre>telefonodueno</nombre>
+      <tipo>character varying(30)</tipo>
+      <nulo>YES</nulo>
+   </columna>
+   <columna>
+      <nombre>tipodni</nombre>
+      <tipo>character varying(25)</tipo>
+      <nulo>YES</nulo>
+      <defecto>'DNI'::character varying</defecto>
+   </columna>   
    <restriccion>
       <nombre>ca_articulos_impuestos2</nombre>
       <consulta>FOREIGN KEY (codimpuesto)

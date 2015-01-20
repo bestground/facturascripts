@@ -1,1 +1,2 @@
-This is a fork of facturascripts because I need some special options
+Fork de facturascripts con una gestión de albaranes de cliente personalizada.
+

@@ -1,16 +1,19 @@
-{include="header"}
+<?php if(!class_exists('raintpl')){exit;}?><?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("header") . ( substr("header",-1,1) != "/" ? "/" : "" ) . basename("header") );?>
 
-{if condition="$fsc->albaran"}
-{if condition="$fsc->albaran->ptefactura"}
+
+<?php if( $fsc->albaran ){ ?>
+
+<?php if( $fsc->albaran->ptefactura ){ ?>
+
 <script type="text/javascript" src="view/js/nueva_venta.js"></script>
 <script type="text/javascript">
-   numlineas = {function="count($fsc->albaran->get_lineas())"};
-   fs_nf0 = {#FS_NF0#};
-   all_impuestos = {function="json_encode($fsc->impuesto->all())"};
-   all_series = {function="json_encode($fsc->serie->all())"};
-   cliente = {function="json_encode($fsc->cliente_s)"};
-   nueva_venta_url = '{$fsc->nuevo_albaran_url}';
-   fs_community_url = '{#FS_COMMUNITY_URL#}';
+   numlineas = <?php echo count($fsc->albaran->get_lineas()); ?>;
+   fs_nf0 = <?php  echo FS_NF0;?>;
+   all_impuestos = <?php echo json_encode($fsc->impuesto->all()); ?>;
+   all_series = <?php echo json_encode($fsc->serie->all()); ?>;
+   cliente = <?php echo json_encode($fsc->cliente_s); ?>;
+   nueva_venta_url = '<?php echo $fsc->nuevo_albaran_url;?>';
+   fs_community_url = '<?php  echo FS_COMMUNITY_URL;?>';
    
    $(document).ready(function() {
       $("#numlineas").val(numlineas);
@@ -32,18 +35,24 @@
       });
    });
 </script>
-{else}
+<?php }else{ ?>
+
 <script type="text/javascript">
    $(document).ready(function() {
-      {if condition="$fsc->albaran->totalrecargo==0"}
+      <?php if( $fsc->albaran->totalrecargo==0 ){ ?>
+
       $(".recargo").hide();
-      {/if}
-      {if condition="$fsc->albaran->totalirpf==0"}
+      <?php } ?>
+
+      <?php if( $fsc->albaran->totalirpf==0 ){ ?>
+
       $(".irpf").hide();
-      {/if}
+      <?php } ?>
+
    });
 </script>
-{/if}
+<?php } ?>
+
 <script type="text/javascript">
    $(document).ready(function() {
       $("#b_imprimir").click(function(event) {
@@ -62,14 +71,14 @@
    });
 </script>
 
-<form name="f_albaran" action="{$fsc->albaran->url()}" method="post" class="form">
-   <input type="hidden" name="idalbaran" value="{$fsc->albaran->idalbaran}"/>
-   <input type="hidden" name="cliente" value="{$fsc->albaran->codcliente}"/>
+<form name="f_albaran" action="<?php echo $fsc->albaran->url();?>" method="post" class="form">
+   <input type="hidden" name="idalbaran" value="<?php echo $fsc->albaran->idalbaran;?>"/>
+   <input type="hidden" name="cliente" value="<?php echo $fsc->albaran->codcliente;?>"/>
    <input type="hidden" id="numlineas" name="numlineas" value="0"/>
    <div class="container-fluid">
       <div class="row" style="margin-top: 10px;">
          <div class="col-md-8 col-sm-8">
-            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+            <a class="btn btn-sm btn-default" href="<?php echo $fsc->url();?>" title="Recargar la página">
                <span class="glyphicon glyphicon-refresh"></span>
             </a>
             
@@ -77,28 +86,38 @@
                <a id="b_imprimir" class="btn btn-sm btn-default">
                   <span class="glyphicon glyphicon-print"></span> &nbsp; Imprimir
                </a>
-               {if condition="$fsc->empresa->can_send_mail()"}
+               <?php if( $fsc->empresa->can_send_mail() ){ ?>
+
                <a id="b_enviar" class="btn btn-sm btn-default" href="#">
                   <span class="glyphicon glyphicon-envelope"></span> &nbsp; Enviar
                </a>
-               {/if}
-               {if condition="$fsc->albaran->ptefactura"}
-               <a class="btn btn-sm btn-default" href="{$fsc->url()}&facturar=TRUE&petid={$fsc->random_string()}">
+               <?php } ?>
+
+               <?php if( $fsc->albaran->ptefactura ){ ?>
+
+               <a class="btn btn-sm btn-default" href="<?php echo $fsc->url();?>&facturar=TRUE&petid=<?php echo $fsc->random_string();?>">
                   <span class="glyphicon glyphicon-paperclip"></span> &nbsp; Aprobar
                </a>
-               {else}
-               <a class="btn btn-sm btn-default text-capitalize" href="{$fsc->albaran->factura_url()}">
+               <?php }else{ ?>
+
+               <a class="btn btn-sm btn-default text-capitalize" href="<?php echo $fsc->albaran->factura_url();?>">
                   <span class="glyphicon glyphicon-eye-open"></span> &nbsp; Ver Factura
                </a>
-               {/if}
+               <?php } ?>
+
                
-               {loop="$fsc->extensions"}
-                  {if condition="$value->type=='button'"}
-                  <a href="index.php?page={$value->from}&id={$fsc->albaran->idalbaran}" class="btn btn-sm btn-default">
-                     {$value->text}
+               <?php $loop_var1=$fsc->extensions; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                  <?php if( $value1->type=='button' ){ ?>
+
+                  <a href="index.php?page=<?php echo $value1->from;?>&id=<?php echo $fsc->albaran->idalbaran;?>" class="btn btn-sm btn-default">
+                     <?php echo $value1->text;?>
+
                   </a>
-                  {/if}
-               {/loop}
+                  <?php } ?>
+
+               <?php } ?>
+
             </div>
          </div>
          <div class="col-md-4 col-sm-4 text-right">
@@ -115,25 +134,29 @@
       <div class="row">
          <div class="col-md-12">
             <h3 class="text-capitalize" style="margin-bottom: 0px;">
-               <a href="{$fsc->ppage->url()}">{#FS_ALBARANES#}</a> /
-               <a href="{$fsc->albaran->cliente_url()}">{$fsc->albaran->nombrecliente}</a> /
-               {$fsc->albaran->codigo}
+               <a href="<?php echo $fsc->ppage->url();?>"><?php  echo FS_ALBARANES;?></a> /
+               <a href="<?php echo $fsc->albaran->cliente_url();?>"><?php echo $fsc->albaran->nombrecliente;?></a> /
+               <?php echo $fsc->albaran->codigo;?>
+
             </h3>
-            {if condition="$fsc->agente"}
+            <?php if( $fsc->agente ){ ?>
+
             <p>
-               <span class="text-capitalize">{#FS_ALBARAN#}</span> creado por
-               <a href="{$fsc->agente->url()}">{$fsc->agente->get_fullname()}</a>.
+               <span class="text-capitalize"><?php  echo FS_ALBARAN;?></span> creado por
+               <a href="<?php echo $fsc->agente->url();?>"><?php echo $fsc->agente->get_fullname();?></a>.
             </p>
-            {/if}
+            <?php } ?>
+
          </div>
       </div>
       <div class="row">
-         {if condition="$fsc->albaran->ptefactura"}
+         <?php if( $fsc->albaran->ptefactura ){ ?>
+
          <div class="col-md-5 col-sm-12">
             <div class="form-group">
                Cliente actual:
                <div class="input-group">
-                  <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" value="{$fsc->albaran->nombrecliente}" placeholder="Buscar" autocomplete="off"/>
+                  <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" value="<?php echo $fsc->albaran->nombrecliente;?>" placeholder="Buscar" autocomplete="off"/>
                   <span class="input-group-btn">
                      <button class="btn btn-default" type="button" onclick="document.f_albaran.ac_cliente.value=''; document.f_albaran.ac_cliente.focus();">
                         <span class="glyphicon glyphicon-edit"></span>
@@ -142,41 +165,50 @@
                </div>
             </div>
          </div>
-         {/if}
+         <?php } ?>
+
          <div class="col-md-2 col-sm-2">
             <div class="form-group">
                Número 2:
-               <input class="form-control" type="text" name="numero2" value="{$fsc->albaran->numero2}"/>
+               <input class="form-control" type="text" name="numero2" value="<?php echo $fsc->albaran->numero2;?>"/>
             </div>
          </div>
          <div class="col-md-2 col-sm-2">
             <div class="form-group">
-               <a href="{$fsc->serie->url()}">Serie</a>:
-               {if condition="$fsc->albaran->ptefactura"}
+               <a href="<?php echo $fsc->serie->url();?>">Serie</a>:
+               <?php if( $fsc->albaran->ptefactura ){ ?>
+
                <select class="form-control" name="serie" id="codserie" onchange="usar_serie();recalcular();">
-               {loop="$fsc->serie->all()"}
-                  {if condition="$value->codserie==$fsc->albaran->codserie"}
-                  <option value="{$value->codserie}" selected="selected">{$value->descripcion}</option>
-                  {else}
-                  <option value="{$value->codserie}">{$value->descripcion}</option>
-                  {/if}
-               {/loop}
+               <?php $loop_var1=$fsc->serie->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                  <?php if( $value1->codserie==$fsc->albaran->codserie ){ ?>
+
+                  <option value="<?php echo $value1->codserie;?>" selected="selected"><?php echo $value1->descripcion;?></option>
+                  <?php }else{ ?>
+
+                  <option value="<?php echo $value1->codserie;?>"><?php echo $value1->descripcion;?></option>
+                  <?php } ?>
+
+               <?php } ?>
+
                </select>
-               {else}
-               <div class="form-control">{$fsc->albaran->codserie}</div>
-               {/if}
+               <?php }else{ ?>
+
+               <div class="form-control"><?php echo $fsc->albaran->codserie;?></div>
+               <?php } ?>
+
             </div>
          </div>
          <div class="col-md-2 col-sm-2">
             <div class="form-group">
                Fecha:
-               <input class="form-control datepicker" type="text" name="fecha" value="{$fsc->albaran->fecha}" autocomplete="off"/>
+               <input class="form-control datepicker" type="text" name="fecha" value="<?php echo $fsc->albaran->fecha;?>" autocomplete="off"/>
             </div>
          </div>
          <div class="col-md-1 col-sm-2">
             <div class="form-group">
                Hora:
-               <input class="form-control" type="text" name="hora" value="{$fsc->albaran->hora}" autocomplete="off"/>
+               <input class="form-control" type="text" name="hora" value="<?php echo $fsc->albaran->hora;?>" autocomplete="off"/>
             </div>
          </div>
       </div>
@@ -187,18 +219,23 @@
          <li role="presentation" class="active">
             <a href="#lineas_a" aria-controls="lineas_a" role="tab" data-toggle="tab">Líneas</a>
          </li>
-         {loop="$fsc->extensions"}
-            {if condition="$value->type=='tab'"}
+         <?php $loop_var1=$fsc->extensions; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+            <?php if( $value1->type=='tab' ){ ?>
+
             <li role="presentation">
-               <a href="#ext_{$value->name}" aria-controls="ext_{$value->name}" role="tab" data-toggle="tab">{$value->text}</a>
+               <a href="#ext_<?php echo $value1->name;?>" aria-controls="ext_<?php echo $value1->name;?>" role="tab" data-toggle="tab"><?php echo $value1->text;?></a>
             </li>
-            {/if}
-         {/loop}
+            <?php } ?>
+
+         <?php } ?>
+
       </ul>
       <div class="tab-content">
          <div role="tabpanel" class="tab-pane active" id="lineas_a">
             <div class="table-responsive">
-               {if condition="$fsc->albaran->ptefactura"}
+               <?php if( $fsc->albaran->ptefactura ){ ?>
+
                <table class="table table-condensed">
                   <thead>
                      <tr>
@@ -215,53 +252,55 @@
                      </tr>
                   </thead>
                   <tbody id="lineas_albaran">
-                     {loop="$fsc->albaran->get_lineas()"}
-                     <tr id="linea_{$counter}">
+                     <?php $loop_var1=$fsc->albaran->get_lineas(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <tr id="linea_<?php echo $counter1;?>">
                         <td>
-                           <input type="hidden" name="idlinea_{$counter}" value="{$value->idlinea}"/>
-                           <input type="hidden" name="referencia_{$counter}" value="{$value->referencia}"/>
+                           <input type="hidden" name="idlinea_<?php echo $counter1;?>" value="<?php echo $value1->idlinea;?>"/>
+                           <input type="hidden" name="referencia_<?php echo $counter1;?>" value="<?php echo $value1->referencia;?>"/>
                            <div class="form-control">
-                              <a target="_blank" href="{$value->articulo_url()}">{$value->referencia}</a>
+                              <a target="_blank" href="<?php echo $value1->articulo_url();?>"><?php echo $value1->referencia;?></a>
                            </div>
                         </td>
-                        <td><input type="text" class="form-control" name="desc_{$counter}" value="{$value->descripcion}" onclick="this.select()"/></td>
+                        <td><input type="text" class="form-control" name="desc_<?php echo $counter1;?>" value="<?php echo $value1->descripcion;?>" onclick="this.select()"/></td>
                         <td>
-                           <input type="number" step="any" id="cantidad_{$counter}" class="form-control text-right" name="cantidad_{$counter}"
-                                  value="{$value->cantidad}" onchange="recalcular()" onkeyup="recalcular()" autocomplete="off" value="1"/>
+                           <input type="number" step="any" id="cantidad_<?php echo $counter1;?>" class="form-control text-right" name="cantidad_<?php echo $counter1;?>"
+                                  value="<?php echo $value1->cantidad;?>" onchange="recalcular()" onkeyup="recalcular()" autocomplete="off" value="1"/>
                         </td>
                         <td>
-                           <button class="btn btn-sm btn-danger" type="button" onclick="$('#linea_{$counter}').remove();recalcular();">
+                           <button class="btn btn-sm btn-danger" type="button" onclick="$('#linea_<?php echo $counter1;?>').remove();recalcular();">
                               <span class="glyphicon glyphicon-trash"></span>
                            </button>
                         </td>
                         
                         <td>
-                           <input type="text" class="form-control text-right" id="pvp_{$counter}" name="pvp_{$counter}" value="{$fsc->_pc($value->pvpunitario)}"
+                           <input type="text" class="form-control text-right" id="pvp_<?php echo $counter1;?>" name="pvp_<?php echo $counter1;?>" value="<?php echo $fsc->_pc($value1->pvpunitario);?>"
                                   onkeyup="recalcular()" onclick="this.select()" autocomplete="off"/>
                         </td>
                         
                         <td>
-                           <input type="text" id="com_porcentaje_{$counter}" name="com_porcentaje_{$counter}" value="{$value->com_porcentaje}" class="form-control text-right"
+                           <input type="text" id="com_porcentaje_<?php echo $counter1;?>" name="com_porcentaje_<?php echo $counter1;?>" value="<?php echo $value1->com_porcentaje;?>" class="form-control text-right"
                                   onkeyup="recalcular()" onclick="this.select()" autocomplete="off"/>
                         </td>
                         <td>
-                           <input type="text" class="form-control text-right" id="com_total_{$counter}" name="com_total_{$counter}"
+                           <input type="text" class="form-control text-right" id="com_total_<?php echo $counter1;?>" name="com_total_<?php echo $counter1;?>"
                                   onchange="recalcular()" onclick="this.select()" autocomplete="off"/>
                         </td>
                         <td>
-                           <input type="text" class="form-control text-right" id="total_menos_comision_{$counter}" name="total_menos_comision_{$counter}"
+                           <input type="text" class="form-control text-right" id="total_menos_comision_<?php echo $counter1;?>" name="total_menos_comision_<?php echo $counter1;?>"
                                   onchange="recalcular()" onclick="this.select()" autocomplete="off"/>
                         </td>
                         <td>
-                           <input type="text" class="form-control text-right" id="com_iva_{$counter}" name="com_iva_{$counter}"
+                           <input type="text" class="form-control text-right" id="com_iva_<?php echo $counter1;?>" name="com_iva_<?php echo $counter1;?>"
                                   onchange="recalcular()" onclick="this.select()" autocomplete="off"/>                        </td>
 
                         <td>
-                           <input type="text" class="form-control text-right" id="total_{$counter}" name="total_{$counter}"
+                           <input type="text" class="form-control text-right" id="total_<?php echo $counter1;?>" name="total_<?php echo $counter1;?>"
                                   onchange="ajustar_total()" onclick="this.select()" autocomplete="off"/>
                         </td>
                      </tr>
-                     {/loop}
+                     <?php } ?>
+
                   </tbody>
                   <tbody>
                      <tr class="bg-info">
@@ -269,25 +308,25 @@
 						   <td colspan="5" class="text-right"><strong>TOTALES:</strong></td>
 						   <td> <strong>Total Bruto</strong>
 								<!--
-								<div id="total_bruto" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+								<div id="total_bruto" class="form-control text-right" style="font-weight: bold;"><?php echo $fsc->show_numero(0);?></div>
 								-->
 								<input type="text" readonly name="total_bruto" id="total_bruto" class="form-control text-right" style="font-weight: bold;"
-									 value="{$fsc->show_numero(0)}" autocomplete="off"/>      		
+									 value="<?php echo $fsc->show_numero(0);?>" autocomplete="off"/>      		
 						   </td>
 
 						   <td class="recargo"> <strong>Importe IVA</strong>
 								<!--
-								<div id="importe_iva" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+								<div id="importe_iva" class="form-control text-right" style="font-weight: bold;"><?php echo $fsc->show_numero(0);?></div>
 								-->
 								<input type="text" readonly name="importe_iva" id="importe_iva" class="form-control text-right" style="font-weight: bold;"
-									 value="{$fsc->show_numero(0)}" autocomplete="off"/>                 		
+									 value="<?php echo $fsc->show_numero(0);?>" autocomplete="off"/>                 		
 						   </td>
 						   <td class="irpf"> <strong>Total Factura</strong>
 								<!--
-								<div id="total_factura" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+								<div id="total_factura" class="form-control text-right" style="font-weight: bold;"><?php echo $fsc->show_numero(0);?></div>
 								-->
 								<input type="text" readonly name="total_factura" id="total_factura" class="form-control text-right" style="font-weight: bold;"
-									 value="{$fsc->show_numero(0)}" autocomplete="off"/>          		
+									 value="<?php echo $fsc->show_numero(0);?>" autocomplete="off"/>          		
 			   
 						   </td>
 						   <td> <strong>Pago Señor</strong>
@@ -298,7 +337,8 @@
 
                   </tbody>
                </table>
-               {else}
+               <?php }else{ ?>
+
                <table class="table table-hover">
                   <thead>
                      <tr>
@@ -313,38 +353,45 @@
                         <th class="text-right">Total</th>
                      </tr>
                   </thead>
-                  {loop="$fsc->albaran->get_lineas()"}
-                  <tr{if condition="$value->cantidad<1"} class="bg-warning"{/if}>
-                     <td><a href="{$value->articulo_url()}">{$value->referencia}</a> {$value->descripcion}</td>
-                     <td class="text-right">{$value->cantidad}</td>
-                     <td class="text-right">{$fsc->show_precio($value->pvpunitario, $fsc->albaran->coddivisa)}</td>
-                     <td class="text-right">{$fsc->show_numero($value->dtopor, 2)} %</td>
-                     <td class="text-right">{$fsc->show_precio($value->pvptotal, $fsc->albaran->coddivisa)}</td>
-                     <td class="text-right">{$fsc->show_numero($value->iva, 2)} %</td>
-                     <td class="text-right recargo">{$fsc->show_numero($value->recargo, 2)} %</td>
-                     <td class="text-right irpf">{$fsc->show_numero($value->irpf, 2)} %</td>
-                     <td class="text-right">{$fsc->show_precio($value->total_iva(), $fsc->albaran->coddivisa)}</td>
+                  <?php $loop_var1=$fsc->albaran->get_lineas(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                  <tr<?php if( $value1->cantidad<1 ){ ?> class="bg-warning"<?php } ?>>
+                     <td><a href="<?php echo $value1->articulo_url();?>"><?php echo $value1->referencia;?></a> <?php echo $value1->descripcion;?></td>
+                     <td class="text-right"><?php echo $value1->cantidad;?></td>
+                     <td class="text-right"><?php echo $fsc->show_precio($value1->pvpunitario, $fsc->albaran->coddivisa);?></td>
+                     <td class="text-right"><?php echo $fsc->show_numero($value1->dtopor, 2);?> %</td>
+                     <td class="text-right"><?php echo $fsc->show_precio($value1->pvptotal, $fsc->albaran->coddivisa);?></td>
+                     <td class="text-right"><?php echo $fsc->show_numero($value1->iva, 2);?> %</td>
+                     <td class="text-right recargo"><?php echo $fsc->show_numero($value1->recargo, 2);?> %</td>
+                     <td class="text-right irpf"><?php echo $fsc->show_numero($value1->irpf, 2);?> %</td>
+                     <td class="text-right"><?php echo $fsc->show_precio($value1->total_iva(), $fsc->albaran->coddivisa);?></td>
                   </tr>
-                  {/loop}
+                  <?php } ?>
+
                   <tr>
                      <td colspan="4"></td>
-                     <td class="text-right"><b>{$fsc->show_precio($fsc->albaran->neto, $fsc->albaran->coddivisa)}</b></td>
-                     <td class="text-right"><b>{$fsc->show_precio($fsc->albaran->totaliva, $fsc->albaran->coddivisa)}</b></td>
-                     <td class="text-right recargo"><b>{$fsc->show_precio($fsc->albaran->totalrecargo, $fsc->albaran->coddivisa)}</b></td>
-                     <td class="text-right irpf"><b>-{$fsc->show_precio($fsc->albaran->totalirpf, $fsc->albaran->coddivisa)}</b></td>
-                     <td class="text-right"><b>{$fsc->show_precio($fsc->albaran->total, $fsc->albaran->coddivisa)}</b></td>
+                     <td class="text-right"><b><?php echo $fsc->show_precio($fsc->albaran->neto, $fsc->albaran->coddivisa);?></b></td>
+                     <td class="text-right"><b><?php echo $fsc->show_precio($fsc->albaran->totaliva, $fsc->albaran->coddivisa);?></b></td>
+                     <td class="text-right recargo"><b><?php echo $fsc->show_precio($fsc->albaran->totalrecargo, $fsc->albaran->coddivisa);?></b></td>
+                     <td class="text-right irpf"><b>-<?php echo $fsc->show_precio($fsc->albaran->totalirpf, $fsc->albaran->coddivisa);?></b></td>
+                     <td class="text-right"><b><?php echo $fsc->show_precio($fsc->albaran->total, $fsc->albaran->coddivisa);?></b></td>
                   </tr>
                </table>
-               {/if}
+               <?php } ?>
+
             </div>
          </div>
-         {loop="$fsc->extensions"}
-            {if condition="$value->type=='tab'"}
-            <div role="tabpanel" class="tab-pane" id="ext_{$value->name}">
-               <iframe src="index.php?page={$value->from}{$value->params}&id={$fsc->albaran->idalbaran}" width="100%" height="600" frameborder="0"></iframe>
+         <?php $loop_var1=$fsc->extensions; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+            <?php if( $value1->type=='tab' ){ ?>
+
+            <div role="tabpanel" class="tab-pane" id="ext_<?php echo $value1->name;?>">
+               <iframe src="index.php?page=<?php echo $value1->from;?><?php echo $value1->params;?>&id=<?php echo $fsc->albaran->idalbaran;?>" width="100%" height="600" frameborder="0"></iframe>
             </div>
-            {/if}
-         {/loop}
+            <?php } ?>
+
+         <?php } ?>
+
       </div>
    </div>
    
@@ -353,7 +400,7 @@
          <div class="col-md-12">
             <div class="form-group">
                Observaciones:
-               <textarea class="form-control" name="observaciones" rows="3">{$fsc->albaran->observaciones}</textarea>
+               <textarea class="form-control" name="observaciones" rows="3"><?php echo $fsc->albaran->observaciones;?></textarea>
             </div>
          </div>
       </div>
@@ -368,8 +415,8 @@
             <h4 class="modal-title">Buscar artículos</h4>
          </div>
          <div class="modal-body">
-            <form id="f_buscar_articulos" name="f_buscar_articulos" action="{$fsc->url()}" method="post" class="form">
-               <input type="hidden" name="codcliente" value="{$fsc->albaran->codcliente}"/>
+            <form id="f_buscar_articulos" name="f_buscar_articulos" action="<?php echo $fsc->url();?>" method="post" class="form">
+               <input type="hidden" name="codcliente" value="<?php echo $fsc->albaran->codcliente;?>"/>
                <div class="container-fluid">
                   <div class="row">
                      <div class="col-lg-6 col-md-6 col-sm-6">
@@ -390,9 +437,11 @@
                         <select class="form-control" name="codfamilia" onchange="buscar_articulos()">
                            <option value="">Todas las familias</option>
                            <option value="">------</option>
-                           {loop="$fsc->familia->all()"}
-                           <option value="{$value->codfamilia}">{$value->descripcion}</option>
-                           {/loop}
+                           <?php $loop_var1=$fsc->familia->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                           <option value="<?php echo $value1->codfamilia;?>"><?php echo $value1->descripcion;?></option>
+                           <?php } ?>
+
                         </select>
                      </div>
                   </div>
@@ -407,7 +456,7 @@
          <div id="search_results"></div>
          <div id="kiwimaru_results"></div>
          <div id="nuevo_articulo" class="modal-body" style="display: none;">
-            <form name="f_nuevo_articulo" action="{$fsc->url()}" method="post" class="form">
+            <form name="f_nuevo_articulo" action="<?php echo $fsc->url();?>" method="post" class="form">
                <div class="form-group">
                   Referencia:
                   <input class="form-control" type="text" name="referencia" maxlength="18" autocomplete="off"/>
@@ -417,19 +466,23 @@
                   <input class="form-control" type="text" name="descripcion" autocomplete="off"/>
                </div>
                <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                  <a href="{$fsc->familia->url()}">Familia</a>:
+                  <a href="<?php echo $fsc->familia->url();?>">Familia</a>:
                   <select name="codfamilia" class="form-control">
-                  {loop="$fsc->familia->all()"}
-                     <option value="{$value->codfamilia}">{$value->descripcion}</option>
-                  {/loop}
+                  <?php $loop_var1=$fsc->familia->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <option value="<?php echo $value1->codfamilia;?>"><?php echo $value1->descripcion;?></option>
+                  <?php } ?>
+
                   </select>
                </div>
                <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                  <a href="{$fsc->impuesto->url()}">IVA</a>:
+                  <a href="<?php echo $fsc->impuesto->url();?>">IVA</a>:
                   <select name="codimpuesto" class="form-control">
-                     {loop="$fsc->impuesto->all()"}
-                     <option value="{$value->codimpuesto}"{if condition="$value->is_default()"} selected="selected"{/if}>{$value->descripcion}</option>
-                     {/loop}
+                     <?php $loop_var1=$fsc->impuesto->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <option value="<?php echo $value1->codimpuesto;?>"<?php if( $value1->is_default() ){ ?> selected="selected"<?php } ?>><?php echo $value1->descripcion;?></option>
+                     <?php } ?>
+
                   </select>
                </div>
                <div class="text-right">
@@ -448,62 +501,72 @@
       <div class="modal-content">
          <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Imprimir {#FS_ALBARAN#}</h4>
+            <h4 class="modal-title">Imprimir <?php  echo FS_ALBARAN;?></h4>
          </div>
          <div class="modal-body">
-            {loop="$fsc->extensions"}
-               {if condition="$value->type=='pdf'"}
-               <a href="index.php?page={$value->from}{$value->params}&id={$fsc->albaran->idalbaran}" target="_blank" class="btn btn-block btn-default">
-                  <span class="glyphicon glyphicon-print"></span> &nbsp; {$value->text}
+            <?php $loop_var1=$fsc->extensions; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+               <?php if( $value1->type=='pdf' ){ ?>
+
+               <a href="index.php?page=<?php echo $value1->from;?><?php echo $value1->params;?>&id=<?php echo $fsc->albaran->idalbaran;?>" target="_blank" class="btn btn-block btn-default">
+                  <span class="glyphicon glyphicon-print"></span> &nbsp; <?php echo $value1->text;?>
+
                </a>
-               {/if}
-            {/loop}
+               <?php } ?>
+
+            <?php } ?>
+
          </div>
       </div>
    </div>
 </div>
 
-<form class="form" role="form" name="enviar_email" action="{$fsc->url()}" method="post">
+<form class="form" role="form" name="enviar_email" action="<?php echo $fsc->url();?>" method="post">
    <div class="modal" id="modal_enviar">
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4 class="modal-title">Enviar {#FS_ALBARAN#}</h4>
+               <h4 class="modal-title">Enviar <?php  echo FS_ALBARAN;?></h4>
             </div>
             <div class="modal-body">
                <div class="form-group">
                   Email del cliente:
-                  <input class="form-control" type="text" name="email" value="{$fsc->cliente_s->email}" autocomplete="off"/>
+                  <input class="form-control" type="text" name="email" value="<?php echo $fsc->cliente_s->email;?>" autocomplete="off"/>
                </div>
                <div class="form-group">
                   Mensaje:
-                  <textarea class="form-control" name="mensaje" rows="6">Buenos días, le adjunto su {#FS_ALBARAN#} {$fsc->albaran->codigo}.
-{$fsc->empresa->email_firma}</textarea>
+                  <textarea class="form-control" name="mensaje" rows="6">Buenos días, le adjunto su <?php  echo FS_ALBARAN;?> <?php echo $fsc->albaran->codigo;?>.
+<?php echo $fsc->empresa->email_firma;?></textarea>
                </div>
             </div>
             <div class="modal-footer">
-            {loop="$fsc->extensions"}
-               {if condition="$value->type=='email'"}
-               <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true;this.form.action='index.php?page={$value->from}{$value->params}&id={$fsc->albaran->idalbaran}';this.form.submit();">
-                  <span class="glyphicon glyphicon-send"></span> &nbsp; Enviar {$value->text}
+            <?php $loop_var1=$fsc->extensions; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+               <?php if( $value1->type=='email' ){ ?>
+
+               <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true;this.form.action='index.php?page=<?php echo $value1->from;?><?php echo $value1->params;?>&id=<?php echo $fsc->albaran->idalbaran;?>';this.form.submit();">
+                  <span class="glyphicon glyphicon-send"></span> &nbsp; Enviar <?php echo $value1->text;?>
+
                </button>
-               {/if}
-            {/loop}
+               <?php } ?>
+
+            <?php } ?>
+
             </div>
          </div>
       </div>
    </div>
 </form>
 
-<form action="{$fsc->ppage->url()}" method="post">
-   <input type="hidden" name="delete" value="{$fsc->albaran->idalbaran}"/>
+<form action="<?php echo $fsc->ppage->url();?>" method="post">
+   <input type="hidden" name="delete" value="<?php echo $fsc->albaran->idalbaran;?>"/>
    <div class="modal fade" id="modal_eliminar">
       <div class="modal-dialog">
          <div class="modal-content">
             <div class="modal-header">
                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-               <h4 class="modal-title">¿Realmente desea eliminar este {#FS_ALBARAN#}?</h4>
+               <h4 class="modal-title">¿Realmente desea eliminar este <?php  echo FS_ALBARAN;?>?</h4>
             </div>
             <div class="modal-footer">
                <div class="pull-left">
@@ -516,19 +579,23 @@
                   <span class="glyphicon glyphicon-trash"></span> &nbsp; Eliminar
                </button>
             </div>
-            {if condition="$fsc->albaran->idfactura"}
+            <?php if( $fsc->albaran->idfactura ){ ?>
+
             <div class="alert alert-info">
-               Hay una factura asociada que será eliminada junto con este {#FS_ALBARAN#}.
+               Hay una factura asociada que será eliminada junto con este <?php  echo FS_ALBARAN;?>.
             </div>
-            {/if}
+            <?php } ?>
+
          </div>
       </div>
    </div>
 </form>
-{else}
+<?php }else{ ?>
+
 <div class="text-center">
    <img src="view/img/fuuu_face.png" alt="fuuuuu"/>
 </div>
-{/if}
+<?php } ?>
 
-{include="footer"}
+
+<?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("footer") . ( substr("footer",-1,1) != "/" ? "/" : "" ) . basename("footer") );?>

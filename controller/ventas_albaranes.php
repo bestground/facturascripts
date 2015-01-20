@@ -117,6 +117,10 @@ class ventas_albaranes extends fs_controller
       }
    }
    
+   public function _pc($str) {
+   		return str_replace('.',',',$str);
+   }
+   
    public function anterior_url()
    {
       $url = '';

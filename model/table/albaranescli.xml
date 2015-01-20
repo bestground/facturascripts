@@ -197,6 +197,32 @@
       <nulo>NO</nulo>
       <defecto>0</defecto>
    </columna>
+
+   <columna>
+      <nombre>total_bruto</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>
+   <columna>
+      <nombre>importe_iva</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>   
+   <columna>
+      <nombre>total_factura</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>
+   <columna>
+      <nombre>pago_senor</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>
+   
    <restriccion>
       <nombre>ca_albaranescli_series2</nombre>
       <consulta>FOREIGN KEY (codserie)

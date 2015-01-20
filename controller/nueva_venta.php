@@ -260,9 +260,22 @@ class nueva_venta extends fs_controller
       $articulo = new articulo();
       $this->articulo = $articulo->get($_POST['referencia4precios']);
    }
-   
+
+   	private function get_float($str) { 
+  		if(strstr($str, ",")) { 
+    		$str = str_replace(".", "", $str); // replace dots (thousand seps) with blancs 
+    		$str = str_replace(",", ".", $str); // replace ',' with '.' 
+  		} 
+  
+  		if(preg_match("#([0-9\.]+)#", $str, $match)) { // search for number that may contain '.' 
+    		return floatval($match[0]); 
+  		} else { 
+    		return floatval($str); 
+  		} 
+	}
+	    
    private function nuevo_albaran_cliente()
-   {
+   {   		
       $continuar = TRUE;
       
       $cliente = $this->cliente->get($_POST['cliente']);
@@ -370,6 +383,8 @@ class nueva_venta extends fs_controller
          {
             $art0 = new articulo();
             $n = floatval($_POST['numlineas']);
+            
+            
             for($i = 0; $i <= $n; $i++)
             {
                if( isset($_POST['referencia_'.$i]) )
@@ -399,21 +414,41 @@ class nueva_venta extends fs_controller
                         }
                      }
                      
-                     $linea->pvpunitario = floatval($_POST['pvp_'.$i]);
+                     //$linea->pvpunitario = floatval($_POST['pvp_'.$i]);
+                     $linea->pvpunitario = $this->get_float($_POST['pvp_'.$i]);
+                     
                      $linea->cantidad = floatval($_POST['cantidad_'.$i]);
+                     
+                     /* cambios
                      $linea->dtopor = floatval($_POST['dto_'.$i]);
                      $linea->pvpsindto = ($linea->pvpunitario * $linea->cantidad);
                      $linea->pvptotal = floatval($_POST['neto_'.$i]);
+                     */
+                     $linea->dtopor = 0;
+                     $linea->pvpsindto = 0;
+                     $linea->pvptotal = 0;
                      
+                     //$linea->com_total = floatval($_POST['com_total_'.$i]);
+                     $linea->com_total = $this->get_float($_POST['com_total_'.$i]);
+                     //$linea->com_porcentaje = floatval($_POST['com_porcentaje_'.$i]);
+                     $linea->com_porcentaje = $this->get_float($_POST['com_porcentaje_'.$i]);                     
+                     //$linea->total_menos_comision = floatval($_POST['total_menos_comision_'.$i]);
+                     $linea->total_menos_comision = $this->get_float($_POST['total_menos_comision_'.$i]);
+                     //$linea->com_iva = floatval($_POST['com_iva_'.$i]);
+                     $linea->com_iva = $this->get_float($_POST['com_iva_'.$i]);
+                     //$linea->neto_real = floatval($_POST['neto_real_'.$i]);
+                     $linea->neto_real = $this->get_float($_POST['neto_real_'.$i]);
+                                          
                      if( $linea->save() )
                      {
                         /// descontamos del stock
                         $articulo->sum_stock($albaran->codalmacen, 0 - $linea->cantidad);
                         
+                        // Totales del albaran
                         $albaran->neto += $linea->pvptotal;
                         $albaran->totaliva += ($linea->pvptotal * $linea->iva/100);
                         $albaran->totalirpf += ($linea->pvptotal * $linea->irpf/100);
-                        $albaran->totalrecargo += ($linea->pvptotal * $linea->recargo/100);
+                        $albaran->totalrecargo += ($linea->pvptotal * $linea->recargo/100);                                     
                      }
                      else
                      {
@@ -431,6 +466,12 @@ class nueva_venta extends fs_controller
             
             if($continuar)
             {
+            	// nuevos campos
+            	$albaran->total_bruto = $this->get_float($_POST['total_bruto']);
+                $albaran->importe_iva = $this->get_float($_POST['importe_iva']);
+                $albaran->total_factura = $this->get_float($_POST['total_factura']);
+                $albaran->pago_senor = $this->get_float($_POST['pago_senor']);
+                        
                /// redondeamos
                $albaran->neto = round($albaran->neto, FS_NF0);
                $albaran->totaliva = round($albaran->totaliva, FS_NF0);

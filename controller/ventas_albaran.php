@@ -48,7 +48,11 @@ class ventas_albaran extends fs_controller
    {
       parent::__construct(__CLASS__, FS_ALBARAN.' de cliente', 'ventas', FALSE, FALSE);
    }
-   
+
+   public function _pc($str) {
+   		return str_replace('.',',',$str);
+   }
+      
    protected function process()
    {
       $this->ppage = $this->page->get('ventas_albaranes');
@@ -251,7 +255,7 @@ class ventas_albaran extends fs_controller
                         $encontrada = TRUE;
                         $cantidad_old = $value->cantidad;
                         $lineas[$k]->cantidad = floatval($_POST['cantidad_'.$num]);
-                        $lineas[$k]->pvpunitario = floatval($_POST['pvp_'.$num]);
+                        $lineas[$k]->pvpunitario = $this->get_float($_POST['pvp_'.$num]);
                         $lineas[$k]->dtopor = floatval($_POST['dto_'.$num]);
                         $lineas[$k]->dtolineal = 0;
                         $lineas[$k]->pvpsindto = ($value->cantidad * $value->pvpunitario);
@@ -271,6 +275,14 @@ class ventas_albaran extends fs_controller
                            $lineas[$k]->iva = floatval($_POST['iva_'.$num]);
                            $lineas[$k]->recargo = floatval($_POST['recargo_'.$num]);
                         }
+ 
+
+                     	$lineas[$k]->com_total = $this->get_float($_POST['com_total_'.$num]);
+                     	$lineas[$k]->com_porcentaje = $this->get_float($_POST['com_porcentaje_'.$num]);                     
+                     	$lineas[$k]->total_menos_comision = $this->get_float($_POST['total_menos_comision_'.$num]);
+                     	$lineas[$k]->com_iva = $this->get_float($_POST['com_iva_'.$num]);
+                     	$lineas[$k]->neto_real = $this->get_float($_POST['neto_real_'.$num]);
+ 
                         
                         if( $lineas[$k]->save() )
                         {
@@ -316,10 +328,17 @@ class ventas_albaran extends fs_controller
                         
                         $linea->idalbaran = $this->albaran->idalbaran;
                         $linea->cantidad = floatval($_POST['cantidad_'.$num]);
-                        $linea->pvpunitario = floatval($_POST['pvp_'.$num]);
+                        $linea->pvpunitario = $this->get_float($_POST['pvp_'.$num]);
                         $linea->dtopor = floatval($_POST['dto_'.$num]);
                         $linea->pvpsindto = ($linea->cantidad * $linea->pvpunitario);
                         $linea->pvptotal = ($linea->cantidad * $linea->pvpunitario * (100 - $linea->dtopor)/100);
+ 
+ 						// Campos nuevos
+                      	$linea->com_total = $this->get_float($_POST['com_total_'.$num]);
+                     	$linea->com_porcentaje = $this->get_float($_POST['com_porcentaje_'.$num]);                     
+                     	$linea->total_menos_comision = $this->get_float($_POST['total_menos_comision_'.$num]);
+                     	$linea->com_iva = $this->get_float($_POST['com_iva_'.$num]);
+                     	$linea->neto_real = $this->get_float($_POST['neto_real_'.$num]);
                         
                         if( $linea->save() )
                         {
@@ -347,11 +366,20 @@ class ventas_albaran extends fs_controller
             $this->albaran->totalrecargo = round($this->albaran->totalrecargo, FS_NF0);
             $this->albaran->total = $this->albaran->neto + $this->albaran->totaliva - $this->albaran->totalirpf + $this->albaran->totalrecargo;
             
+            // nuevos campos
+            $this->albaran->total_bruto = $this->get_float($_POST['total_bruto']);
+            $this->albaran->importe_iva = $this->get_float($_POST['importe_iva']);
+            $this->albaran->total_factura = $this->get_float($_POST['total_factura']);
+            $this->albaran->pago_senor = $this->get_float($_POST['pago_senor']);
+            
+            
+            /* CAMBIO
             if( abs(floatval($_POST['atotal']) - $this->albaran->total) > .01 )
             {
                $this->new_error_msg("El total difiere entre el controlador y la vista (".$this->albaran->total.
                        " frente a ".$_POST['atotal']."). Debes informar del error.");
             }
+            */
          }
       }
       
@@ -363,7 +391,20 @@ class ventas_albaran extends fs_controller
       else
          $this->new_error_msg("¡Imposible modificar el ".FS_ALBARAN."!");
    }
-   
+
+   	private function get_float($str) { 
+  		if(strstr($str, ",")) { 
+    		$str = str_replace(".", "", $str); // replace dots (thousand seps) with blancs 
+    		$str = str_replace(",", ".", $str); // replace ',' with '.' 
+  		} 
+  
+  		if(preg_match("#([0-9\.]+)#", $str, $match)) { // search for number that may contain '.' 
+    		return floatval($match[0]); 
+  		} else { 
+    		return floatval($str); 
+  		} 
+	}
+	   
    private function generar_factura()
    {
       $factura = new factura_cliente();

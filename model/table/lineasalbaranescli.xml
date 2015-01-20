@@ -101,6 +101,37 @@
       <tipo>character varying(18)</tipo>
       <nulo>NO</nulo>
    </columna>
+   
+   <columna>
+      <nombre>com_total</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>
+   <columna>
+      <nombre>com_porcentaje</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>    
+   <columna>
+      <nombre>total_menos_comision</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>  
+   <columna>
+      <nombre>com_iva</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>
+   <columna>
+      <nombre>neto_real</nombre>
+      <tipo>double precision</tipo>
+      <nulo>NO</nulo>
+      <defecto>0</defecto>
+   </columna>
    <restriccion>
       <nombre>ca_lineasalbaranescli_albaranescli2</nombre>
       <consulta>FOREIGN KEY (idalbaran)

@@ -81,6 +81,8 @@ function usar_serie()
    }
 }
 
+/*
+// recalcular original
 function recalcular()
 {
    var l_uds = 0;
@@ -153,6 +155,90 @@ function recalcular()
    {
       $(".irpf").show();
    }
+}
+*/
+
+function _cp(str) {
+	if (typeof str != 'undefined') {
+		return str.replace(",", ".");
+	} else {
+		return "";
+	}
+}
+
+function _pc(str) {
+	if (typeof str != 'undefined') {
+		return str.replace(".", ",");
+	} else {
+		return "";
+	}
+}
+
+// recalcular modificada
+function recalcular()
+{
+	var l_uds = 0;
+   	var l_pvp = 0;
+   	var l_com_porcentaje = 0;
+   	var l_com_total = 0;
+   	var l_total_menos_comision = 0;
+   	var l_iva_comision = 0;
+   	var l_neto_real = 0;
+   	
+   	var total_bruto = 0;
+   	var importe_iva = 0;
+   	var total_factura = 0;
+   	var pago_senor = 0;
+   
+   	for (var i=0; i<numlineas; i++) {
+      	if ($("#linea_"+i).length > 0) {
+        	l_uds = parseFloat( $("#cantidad_"+i).val() );
+         	l_pvp = parseFloat( _cp($("#pvp_"+i).val()) );
+         	l_com_porcentaje = parseFloat( _cp($("#com_porcentaje_"+i).val()) );
+         	
+			l_com_total = (l_uds * l_pvp * l_com_porcentaje) / 100 ;
+			l_com_total = l_com_total.toFixed(2);
+			
+			l_total_menos_comision = (l_uds * l_pvp) - l_com_total;
+			l_total_menos_comision = l_total_menos_comision.toFixed(2);
+			
+			l_iva_comision = (21 * l_com_total) / 100;
+			l_iva_comision = l_iva_comision.toFixed(2);
+			
+			l_neto_real = l_total_menos_comision - l_iva_comision;
+			l_neto_real = l_neto_real.toFixed(2);
+			
+			$("#com_total_"+i).val( show_numero(l_com_total) );
+			$("#total_menos_comision_"+i).val( show_numero(l_total_menos_comision) );
+			$("#com_iva_"+i).val( show_numero(l_iva_comision) );
+			$("#total_"+i).val( show_numero(l_neto_real) );
+			
+			total_bruto += parseFloat(_cp(l_com_total));
+			importe_iva += parseFloat(_cp(l_iva_comision));
+			pago_senor += parseFloat(_cp(l_neto_real));
+      	}
+      	
+		
+      	$("#total_bruto").val(_pc(total_bruto.toFixed(2)));
+      	$("#importe_iva").val(_pc(importe_iva.toFixed(2)));
+      	total_factura = total_bruto + importe_iva;
+      	$("#total_factura").val(_pc(total_factura.toFixed(2)));
+      	$("#pago_senor").val(_pc(pago_senor.toFixed(2)));
+   	}
+ 
+/*   
+   neto = fs_round(neto, fs_nf0);
+   total_iva = fs_round(total_iva, fs_nf0);
+   total_irpf = fs_round(total_irpf, fs_nf0);
+   total_recargo = fs_round(total_recargo, fs_nf0);
+   
+   $("#aneto").html( show_numero(neto) );
+   $("#aiva").html( show_numero(total_iva) );
+   $("#are").html( show_numero(total_recargo) );
+   $("#airpf").html( '-'+show_numero(total_irpf) );
+   $("#atotal").val( neto + total_iva - total_irpf + total_recargo );
+*/   
+
 }
 
 function ajustar_neto()
@@ -274,6 +360,7 @@ function ajustar_iva(num)
 
 function aux_all_impuestos(num,codimpuesto)
 {
+/*
    var iva = 0;
    var recargo = 0;
    if(cliente.regimeniva != 'Exento' && !siniva)
@@ -308,12 +395,32 @@ function aux_all_impuestos(num,codimpuesto)
            "\" value=\""+recargo+"\" onclick=\"this.select()\" onkeyup=\"recalcular()\" autocomplete=\"off\"/></td>";
    
    html += "<td class=\"irpf\"><div class=\"form-control text-right\" id=\"irpf_"+num+"\">"+show_numero(irpf)+"</div></td>";
-   
+*/ 
+   var html = ""; 
    return html;
 }
 
-function add_articulo(ref,desc,pvp,dto,codimpuesto)
+function add_articulo(ref,desc,pvp,dto,codimpuesto,comision)
 {
+   var com_porcentaje = comision;
+   var com_total = (pvp * comision) / 100 ;
+   com_total = com_total.toFixed(2);
+   
+   var total_menos_comision = pvp - com_total;
+   total_menos_comision = total_menos_comision.toFixed(2);
+   
+   var com_iva = (com_total * 21) / 100;
+   com_iva = com_iva.toFixed(2);
+   
+   var neto_real = total_menos_comision - com_iva;
+   
+   // Conversiones a formato español
+   pvp = show_numero(pvp);
+   com_total = show_numero(com_total);
+   com_iva = show_numero(com_iva);
+   neto_real = show_numero(neto_real);
+   total_menos_comision = show_numero(total_menos_comision);
+   
    $("#lineas_albaran").append("<tr id=\"linea_"+numlineas+"\">\n\
       <td><input type=\"hidden\" name=\"idlinea_"+numlineas+"\" value=\"-1\"/>\n\
          <input type=\"hidden\" name=\"referencia_"+numlineas+"\" value=\""+ref+"\"/>\n\
@@ -325,15 +432,19 @@ function add_articulo(ref,desc,pvp,dto,codimpuesto)
          <span class=\"glyphicon glyphicon-trash\"></span></button></td>\n\
       <td><input type=\"text\" class=\"form-control text-right\" id=\"pvp_"+numlineas+"\" name=\"pvp_"+numlineas+"\" value=\""+pvp+
          "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      <td><input type=\"text\" id=\"dto_"+numlineas+"\" name=\"dto_"+numlineas+"\" value=\""+dto+
-         "\" class=\"form-control text-right\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      <td><input type=\"text\" class=\"form-control text-right\" id=\"neto_"+numlineas+"\" name=\"neto_"+numlineas+
-         "\" onchange=\"ajustar_neto()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      "+aux_all_impuestos(numlineas,codimpuesto)+"\n\
-      <td><input type=\"text\" class=\"form-control text-right\" id=\"total_"+numlineas+"\" name=\"total_"+numlineas+
+      <td><input type=\"text\" class=\"form-control text-right\" id=\"com_porcentaje_"+numlineas+"\" name=\"com_porcentaje_"+numlineas+"\" value=\""+com_porcentaje+
+         "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
+      <td><input type=\"text\" class=\"form-control text-right\" id=\"com_total_"+numlineas+"\" name=\"com_total_"+numlineas+"\" value=\""+com_total+
+         "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
+      <td><input type=\"text\" class=\"form-control text-right\" id=\"total_menos_comision_"+numlineas+"\" name=\"total_menos_comision_"+numlineas+"\" value=\""+total_menos_comision+
+         "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
+      <td><input type=\"text\" class=\"form-control text-right\" id=\"com_iva_"+numlineas+"\" name=\"com_iva_"+numlineas+"\" value=\""+com_iva+
+         "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
+      <td><input type=\"text\" class=\"form-control text-right\" id=\"total_"+numlineas+"\" name=\"total_"+numlineas+"\" value=\""+neto_real+
          "\" onchange=\"ajustar_total()\" onclick=\"this.select()\" autocomplete=\"off\"/></td></tr>");
    numlineas += 1;
    $("#numlineas").val(numlineas);
+   
    recalcular();
    
    $("#nav_articulos").hide();
@@ -364,6 +475,8 @@ function get_precios(ref)
 
 function new_articulo()
 {
+	
+	
    if( nueva_venta_url != '' )
    {
       $.ajax({
@@ -382,7 +495,7 @@ function new_articulo()
             $("#kiwimaru_results").hide();
             $("#nuevo_articulo").hide();
             
-            add_articulo(datos[0].referencia, datos[0].descripcion, datos[0].pvp, 0, datos[0].codimpuesto);
+            add_articulo(datos[0].referencia, datos[0].descripcion, datos[0].pvp, 0, datos[0].codimpuesto, 25);
          }
       });
    }
@@ -403,14 +516,40 @@ function buscar_articulos()
    else
    {
       $("#nav_articulos").show();
-      
+
       if(nueva_venta_url !== '')
       {
+
+      	
          fin_busqueda1 = false;
          $.getJSON(nueva_venta_url, $("form[name=f_buscar_articulos]").serialize(), function(json) {
             var items = [];
             var insertar = false;
+            var fec_actual = new Date();
+			console.log(fec_actual);
+            
             $.each(json, function(key, val) {
+               var f_arr = val.fentrada.split("-");
+               var fec_entrada =  new Date(f_arr[2], parseInt(f_arr[1]) - 1,f_arr[0]);             
+               var diferencia = fec_actual.getTime() - fec_entrada.getTime();
+               var dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+               
+               val.com_porcentaje = 25;
+               
+               if ( -1 < dias  <= 31) {				// 1 mes
+               		val.com_porcentaje = 25;
+               } else if ( 31 < dias  <= 62) {  	// 2 mes
+               		val.com_porcentaje = 30;
+               } else if ( 62 < dias  <= 93) {  	// 3 mes
+               		val.com_porcentaje = 35;
+               } else if ( 93 < dias  <= 124) { 	// 4 mes
+               		val.com_porcentaje = 40;
+               } else if ( 124 < dias  <= 155) {	// 5 mes
+               		val.com_porcentaje = 45;
+               } else if ( 155 < dias) {	// 6 mes
+               		val.com_porcentaje = 50;               
+               }
+               
                var tr_aux = '<tr>';
                if(val.bloqueado)
                {
@@ -428,9 +567,9 @@ function buscar_articulos()
                if(val.sevende)
                {
                   items.push(tr_aux+"<td><a href=\"#\" onclick=\"get_precios('"+val.referencia+"')\" title=\"más detalles\"><span class=\"glyphicon glyphicon-eye-open\"></span></a>\n\
-                     &nbsp; <a href=\"#\" onclick=\"add_articulo('"+val.referencia+"','"+val.descripcion+"','"+val.pvp+"','"+val.dtopor+"','"+val.codimpuesto+"')\">"+val.referencia+'</a> '+val.descripcion+"</td>\n\
-                     <td class=\"text-right\"><a href=\"#\" onclick=\"add_articulo('"+val.referencia+"','"+val.descripcion+"','"+val.pvp+"','"+val.dtopor+"','"+val.codimpuesto+"')\">"+show_precio(val.pvp*(100-val.dtopor)/100)+"</a></td>\n\
-                     <td class=\"text-right\"><a href=\"#\" onclick=\"add_articulo('"+val.referencia+"','"+val.descripcion+"','"+val.pvp+"','"+val.dtopor+"','"+val.codimpuesto+"')\">"+show_pvp_iva(val.pvp*(100-val.dtopor)/100,val.codimpuesto)+"</a></td>\n\
+                     &nbsp; <a href=\"#\" onclick=\"add_articulo('"+val.referencia+"','"+val.descripcion+"','"+val.pvp+"','"+val.dtopor+"','"+val.codimpuesto+"','"+val.com_porcentaje+"')\">"+val.referencia+'</a> '+val.descripcion+"</td>\n\
+                     <td class=\"text-right\"><a href=\"#\" onclick=\"add_articulo('"+val.referencia+"','"+val.descripcion+"','"+val.pvp+"','"+val.dtopor+"','"+val.codimpuesto+"','"+val.com_porcentaje+"')\">"+show_precio(val.pvp*(100-val.dtopor)/100)+"</a></td>\n\
+                     <td class=\"text-right\"><a href=\"#\" onclick=\"add_articulo('"+val.referencia+"','"+val.descripcion+"','"+val.pvp+"','"+val.dtopor+"','"+val.codimpuesto+"','"+val.com_porcentaje+"')\">"+show_pvp_iva(val.pvp*(100-val.dtopor)/100,val.codimpuesto)+"</a></td>\n\
                      <td class=\"text-right\">"+val.stockfis+"</td></tr>");
                }
                

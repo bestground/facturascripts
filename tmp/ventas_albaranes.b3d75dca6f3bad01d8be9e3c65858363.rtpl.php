@@ -1,4 +1,5 @@
-{include="header"}
+<?php if(!class_exists('raintpl')){exit;}?><?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("header") . ( substr("header",-1,1) != "/" ? "/" : "" ) . basename("header") );?>
+
 
 <script type="text/javascript">
    function buscar_lineas()
@@ -11,7 +12,7 @@
       {
          $.ajax({
             type: 'POST',
-            url: '{$fsc->url()}',
+            url: '<?php echo $fsc->url();?>',
             dataType: 'html',
             data: $('form[name=f_buscar_lineas]').serialize(),
             success: function(datos) {
@@ -46,18 +47,21 @@
    <div class="row">
       <div class="col-md-8 col-sm-7 col-xs-8">
          <div class="btn-group hidden-xs">
-            <a class="btn btn-sm btn-default" href="{$fsc->url()}" title="Recargar la página">
+            <a class="btn btn-sm btn-default" href="<?php echo $fsc->url();?>" title="Recargar la página">
                <span class="glyphicon glyphicon-refresh"></span>
             </a>
-            {if condition="$fsc->page->is_default()"}
-            <a class="btn btn-sm btn-default active" href="{$fsc->url()}&amp;default_page=FALSE" title="desmarcar como página de inicio">
+            <?php if( $fsc->page->is_default() ){ ?>
+
+            <a class="btn btn-sm btn-default active" href="<?php echo $fsc->url();?>&amp;default_page=FALSE" title="desmarcar como página de inicio">
                <span class="glyphicon glyphicon-home"></span>
             </a>
-            {else}
-            <a class="btn btn-sm btn-default" href="{$fsc->url()}&amp;default_page=TRUE" title="marcar como página de inicio">
+            <?php }else{ ?>
+
+            <a class="btn btn-sm btn-default" href="<?php echo $fsc->url();?>&amp;default_page=TRUE" title="marcar como página de inicio">
                <span class="glyphicon glyphicon-home"></span>
             </a>
-            {/if}
+            <?php } ?>
+
          </div>
          
          <div class="btn-group">
@@ -71,11 +75,15 @@
             </a>
             -->
             
-            {loop="$fsc->extensions"}
-               {if condition="$value->type=='button'"}
-               <a href="index.php?page={$value->from}" class="btn btn-sm btn-default">{$value->text}</a>
-               {/if}
-            {/loop}
+            <?php $loop_var1=$fsc->extensions; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+               <?php if( $value1->type=='button' ){ ?>
+
+               <a href="index.php?page=<?php echo $value1->from;?>" class="btn btn-sm btn-default"><?php echo $value1->text;?></a>
+               <?php } ?>
+
+            <?php } ?>
+
          </div>
       </div>
       <div class="col-md-2 col-sm-2 col-xs-4 text-right">
@@ -85,9 +93,9 @@
       </div>
       <div class="col-md-2 col-sm-3 col-xs-12">
          <div class="visible-xs"><br/></div>
-         <form name="f_custom_search" action="{$fsc->url()}" method="post" class="form">
+         <form name="f_custom_search" action="<?php echo $fsc->url();?>" method="post" class="form">
             <div class="input-group">
-               <input class="form-control" type="text" name="query" value="{$fsc->query}" autocomplete="off" placeholder="Buscar">
+               <input class="form-control" type="text" name="query" value="<?php echo $fsc->query;?>" autocomplete="off" placeholder="Buscar">
                <span class="input-group-btn">
                   <button class="btn btn-primary hidden-sm" type="submit">
                      <span class="glyphicon glyphicon-search"></span>
@@ -99,17 +107,19 @@
    </div>
 </div>
 
-{if condition="$fsc->query!=''"}
-<h3 class="text-center">Resultados de "{$fsc->query}":</h3>
-{/if}
+<?php if( $fsc->query!='' ){ ?>
+
+<h3 class="text-center">Resultados de "<?php echo $fsc->query;?>":</h3>
+<?php } ?>
+
 
 <ul class="nav nav-tabs" role="tablist">
-   <li{if condition="!$fsc->pendientes"} class="active"{/if}>
-      <a href="{$fsc->url()}&ptefactura=FALSE">Todos los {#FS_ALBARANES#}</a>
+   <li<?php if( !$fsc->pendientes ){ ?> class="active"<?php } ?>>
+      <a href="<?php echo $fsc->url();?>&ptefactura=FALSE">Todos los <?php  echo FS_ALBARANES;?></a>
    </li>
    <!-- CAMBIO
-   <li{if condition="$fsc->pendientes"} class="active"{/if}>
-      <a href="{$fsc->url()}&ptefactura=TRUE">
+   <li<?php if( $fsc->pendientes ){ ?> class="active"<?php } ?>>
+      <a href="<?php echo $fsc->url();?>&ptefactura=TRUE">
          <span class="glyphicon glyphicon-time"></span> &nbsp; Pendientes
       </a>
    </li>
@@ -132,51 +142,60 @@
             <th class="text-right">Hora</th>
          </tr>
       </thead>
-      {loop="$fsc->resultados"}
-      <tr class='clickableRow{if="$value->total<=0"} bg-warning{/if}' href="{$value->url()}">
+      <?php $loop_var1=$fsc->resultados; $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+      <tr class='clickableRow<?php if( $value1->total<=0 ){ ?> bg-warning<?php } ?>' href="<?php echo $value1->url();?>">
          <td class="text-center">
-            {if condition="!$value->ptefactura"}
-            <span class="glyphicon glyphicon-paperclip" title="El {#FS_ALBARAN#} tiene vinculado una factura"></span>
-            {/if}
+            <?php if( !$value1->ptefactura ){ ?>
+
+            <span class="glyphicon glyphicon-paperclip" title="El <?php  echo FS_ALBARAN;?> tiene vinculado una factura"></span>
+            <?php } ?>
+
          </td>
-         <td><a href="{$value->url()}">{$value->codigo}</a> {$value->numero2}</td>
-         <td>{$value->nombrecliente}</td>
-         <td>{$value->observaciones_resume()}</td>
-         <td class="text-right">{$fsc->_pc($value->total_bruto)}</td>
-         <td class="text-right">{$fsc->_pc($value->importe_iva)}</td>
-         <td class="text-right">{$fsc->_pc($value->total_factura)}</td>
-         <td class="text-right">{$fsc->_pc($value->pago_senor)}</td>
-         <td class="text-right">{$value->fecha}</td>
-         <td class="text-right">{$value->hora}</td>
+         <td><a href="<?php echo $value1->url();?>"><?php echo $value1->codigo;?></a> <?php echo $value1->numero2;?></td>
+         <td><?php echo $value1->nombrecliente;?></td>
+         <td><?php echo $value1->observaciones_resume();?></td>
+         <td class="text-right"><?php echo $fsc->_pc($value1->total_bruto);?></td>
+         <td class="text-right"><?php echo $fsc->_pc($value1->importe_iva);?></td>
+         <td class="text-right"><?php echo $fsc->_pc($value1->total_factura);?></td>
+         <td class="text-right"><?php echo $fsc->_pc($value1->pago_senor);?></td>
+         <td class="text-right"><?php echo $value1->fecha;?></td>
+         <td class="text-right"><?php echo $value1->hora;?></td>
       </tr>
-      {else}
+      <?php }else{ ?>
+
       <tr class="bg-warning">
          <td></td>
-         <td colspan="6">Ningún {#FS_ALBARAN#} encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
+         <td colspan="6">Ningún <?php  echo FS_ALBARAN;?> encontrado. Pulsa el botón <b>Nuevo</b> para crear uno.</td>
       </tr>
-      {/loop}
+      <?php } ?>
+
    </table>
 </div>
 
 <ul class="pager">
-   {if condition="$fsc->anterior_url()!=''"}
+   <?php if( $fsc->anterior_url()!='' ){ ?>
+
    <li class="previous">
-      <a href="{$fsc->anterior_url()}">
+      <a href="<?php echo $fsc->anterior_url();?>">
          <span class="glyphicon glyphicon-chevron-left"></span> &nbsp; Anteriores
       </a>
    </li>
-   {/if}
+   <?php } ?>
+
    
-   {if condition="$fsc->siguiente_url()!=''"}
+   <?php if( $fsc->siguiente_url()!='' ){ ?>
+
    <li class="next">
-      <a href="{$fsc->siguiente_url()}">
+      <a href="<?php echo $fsc->siguiente_url();?>">
          Siguientes &nbsp; <span class="glyphicon glyphicon-chevron-right"></span>
       </a>
    </li>
-   {/if}
+   <?php } ?>
+
 </ul>
 
-<form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action ="{$fsc->url()}" method="post">
+<form class="form" role="form" id="f_buscar_lineas" name="f_buscar_lineas" action ="<?php echo $fsc->url();?>" method="post">
    <div class="modal" id="modal_buscar_lineas">
       <div class="modal-dialog" style="width: 99%; max-width: 950px;">
          <div class="modal-content">
@@ -200,4 +219,4 @@
    </div>
 </form>
 
-{include="footer"}
+<?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("footer") . ( substr("footer",-1,1) != "/" ? "/" : "" ) . basename("footer") );?>

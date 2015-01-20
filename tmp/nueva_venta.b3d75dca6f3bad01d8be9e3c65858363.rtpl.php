@@ -1,14 +1,16 @@
-{include="header"}
+<?php if(!class_exists('raintpl')){exit;}?><?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("header") . ( substr("header",-1,1) != "/" ? "/" : "" ) . basename("header") );?>
 
-{if condition="$fsc->cliente_s"}
+
+<?php if( $fsc->cliente_s ){ ?>
+
 <script type="text/javascript" src="view/js/nueva_venta.js"></script>
 <script type="text/javascript">
-   fs_nf0 = {#FS_NF0#};
-   all_impuestos = {function="json_encode($fsc->impuesto->all())"};
-   all_series = {function="json_encode($fsc->serie->all())"};
-   cliente = {function="json_encode($fsc->cliente_s)"};
-   nueva_venta_url = '{$fsc->url()}';
-   fs_community_url = '{#FS_COMMUNITY_URL#}';
+   fs_nf0 = <?php  echo FS_NF0;?>;
+   all_impuestos = <?php echo json_encode($fsc->impuesto->all()); ?>;
+   all_series = <?php echo json_encode($fsc->serie->all()); ?>;
+   cliente = <?php echo json_encode($fsc->cliente_s); ?>;
+   nueva_venta_url = '<?php echo $fsc->url();?>';
+   fs_community_url = '<?php  echo FS_COMMUNITY_URL;?>';
    
    $(document).ready(function() {
       usar_serie();
@@ -39,8 +41,8 @@
             <h4 class="modal-title">Buscar artículos</h4>
          </div>
          <div class="modal-body">
-            <form id="f_buscar_articulos" name="f_buscar_articulos" action="{$fsc->url()}" method="post" class="form">
-               <input type="hidden" name="codcliente" value="{$fsc->cliente_s->codcliente}"/>
+            <form id="f_buscar_articulos" name="f_buscar_articulos" action="<?php echo $fsc->url();?>" method="post" class="form">
+               <input type="hidden" name="codcliente" value="<?php echo $fsc->cliente_s->codcliente;?>"/>
                <div class="container-fluid">
                   <div class="row">
                      <div class="col-lg-6 col-md-6 col-sm-6">
@@ -61,9 +63,11 @@
                         <select class="form-control" name="codfamilia" onchange="buscar_articulos()">
                            <option value="">Todas las familias</option>
                            <option value="">------</option>
-                           {loop="$fsc->familia->all()"}
-                           <option value="{$value->codfamilia}">{$value->descripcion}</option>
-                           {/loop}
+                           <?php $loop_var1=$fsc->familia->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                           <option value="<?php echo $value1->codfamilia;?>"><?php echo $value1->descripcion;?></option>
+                           <?php } ?>
+
                         </select>
                      </div>
                   </div>
@@ -78,7 +82,7 @@
          <div id="search_results"></div>
          <div id="kiwimaru_results"></div>
          <div id="nuevo_articulo" class="modal-body" style="display: none;">
-            <form name="f_nuevo_articulo" action="{$fsc->url()}" method="post" class="form">
+            <form name="f_nuevo_articulo" action="<?php echo $fsc->url();?>" method="post" class="form">
                <div class="form-group">
                   Referencia:
                   <input class="form-control" type="text" name="referencia" maxlength="18" autocomplete="off"/>
@@ -88,19 +92,23 @@
                   <input class="form-control" type="text" name="descripcion" autocomplete="off"/>
                </div>
                <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                  <a href="{$fsc->familia->url()}">Familia</a>:
+                  <a href="<?php echo $fsc->familia->url();?>">Familia</a>:
                   <select name="codfamilia" class="form-control">
-                     {loop="$fsc->familia->all()"}
-                     <option value="{$value->codfamilia}">{$value->descripcion}</option>
-                     {/loop}
+                     <?php $loop_var1=$fsc->familia->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <option value="<?php echo $value1->codfamilia;?>"><?php echo $value1->descripcion;?></option>
+                     <?php } ?>
+
                   </select>
                </div>
                <div class="form-group col-lg-6 col-md-6 col-sm-6">
-                  <a href="{$fsc->impuesto->url()}">IVA</a>:
+                  <a href="<?php echo $fsc->impuesto->url();?>">IVA</a>:
                   <select name="codimpuesto" class="form-control">
-                     {loop="$fsc->impuesto->all()"}
-                     <option value="{$value->codimpuesto}"{if condition="$value->is_default()"} selected="selected"{/if}>{$value->descripcion}</option>
-                     {/loop}
+                     <?php $loop_var1=$fsc->impuesto->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <option value="<?php echo $value1->codimpuesto;?>"<?php if( $value1->is_default() ){ ?> selected="selected"<?php } ?>><?php echo $value1->descripcion;?></option>
+                     <?php } ?>
+
                   </select>
                </div>
                <div class="text-right">
@@ -114,27 +122,27 @@
    </div>
 </div>
 
-<form id="f_new_albaran" class="form" name="f_new_albaran" action="{$fsc->url()}" method="post">
-   <input type="hidden" name="petition_id" value="{$fsc->random_string()}"/>
+<form id="f_new_albaran" class="form" name="f_new_albaran" action="<?php echo $fsc->url();?>" method="post">
+   <input type="hidden" name="petition_id" value="<?php echo $fsc->random_string();?>"/>
    <input type="hidden" id="numlineas" name="numlineas" value="0"/>
-   <input type="hidden" name="cliente" value="{$fsc->cliente_s->codcliente}"/>
+   <input type="hidden" name="cliente" value="<?php echo $fsc->cliente_s->codcliente;?>"/>
    <div class="container-fluid">
       <div class="row">
          <div class="col-lg-8 col-md-8 col-sm-8">
             <h1>
-               <a href="{$fsc->cliente_s->url()}">{$fsc->cliente_s->nombre}</a>
+               <a href="<?php echo $fsc->cliente_s->url();?>"><?php echo $fsc->cliente_s->nombre;?></a>
             </h1>
          </div>
          <div class="col-lg-2 col-md-2 col-sm-2">
             <div class="form-group">
                Fecha:
-               <input type="text" name="fecha" class="form-control datepicker" value="{$fsc->today()}" autocomplete="off"/>
+               <input type="text" name="fecha" class="form-control datepicker" value="<?php echo $fsc->today();?>" autocomplete="off"/>
             </div>
          </div>
          <div class="col-lg-2 col-md-2 col-sm-2">
             <div class="form-group">
                Hora:
-               <input type="text" name="hora" class="form-control" value="{$fsc->hour()}" autocomplete="off"/>
+               <input type="text" name="hora" class="form-control" value="<?php echo $fsc->hour();?>" autocomplete="off"/>
             </div>
          </div>
       </div>
@@ -181,25 +189,25 @@
                <td colspan="5" class="text-right"><strong>TOTALES:</strong></td>
                <td> <strong>Total Bruto</strong>
                		<!--
-                  	<div id="total_bruto" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+                  	<div id="total_bruto" class="form-control text-right" style="font-weight: bold;"><?php echo $fsc->show_numero(0);?></div>
                		-->
                     <input type="text" readonly name="total_bruto" id="total_bruto" class="form-control text-right" style="font-weight: bold;"
-                         value="{$fsc->show_numero(0)}" autocomplete="off"/>      		
+                         value="<?php echo $fsc->show_numero(0);?>" autocomplete="off"/>      		
                </td>
 
                <td class="recargo"> <strong>Importe IVA</strong>
                		<!--
-                  	<div id="importe_iva" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+                  	<div id="importe_iva" class="form-control text-right" style="font-weight: bold;"><?php echo $fsc->show_numero(0);?></div>
                		-->
                     <input type="text" readonly name="importe_iva" id="importe_iva" class="form-control text-right" style="font-weight: bold;"
-                         value="{$fsc->show_numero(0)}" autocomplete="off"/>                 		
+                         value="<?php echo $fsc->show_numero(0);?>" autocomplete="off"/>                 		
                </td>
                <td class="irpf"> <strong>Total Factura</strong>
                		<!--
-                  	<div id="total_factura" class="form-control text-right" style="font-weight: bold;">{$fsc->show_numero(0)}</div>
+                  	<div id="total_factura" class="form-control text-right" style="font-weight: bold;"><?php echo $fsc->show_numero(0);?></div>
                    	-->
                    	<input type="text" readonly name="total_factura" id="total_factura" class="form-control text-right" style="font-weight: bold;"
-                         value="{$fsc->show_numero(0)}" autocomplete="off"/>          		
+                         value="<?php echo $fsc->show_numero(0);?>" autocomplete="off"/>          		
                
                </td>
                <td> <strong>Pago Señor</strong>
@@ -216,57 +224,76 @@
       <div class="row" id="div_opciones" style="display: none; padding-top: 20px;">
          <div class="col-lg-3 col-md-3 col-sm-3">
             <div class="form-group">
-               <a href="{$fsc->agente->url()}">Empleado</a>:
+               <a href="<?php echo $fsc->agente->url();?>">Empleado</a>:
                <select name="codagente" class="form-control">
-                  <option value="{$fsc->agente->codagente}">{$fsc->agente->get_fullname()}</option>
-                  {if condition="$fsc->user->admin"}
-                     <option value="{$fsc->agente->codagente}">-----</option>
-                     {loop="$fsc->agente->all()"}
-                     <option value="{$value->codagente}">{$value->get_fullname()}</option>
-                     {/loop}
-                  {/if}
+                  <option value="<?php echo $fsc->agente->codagente;?>"><?php echo $fsc->agente->get_fullname();?></option>
+                  <?php if( $fsc->user->admin ){ ?>
+
+                     <option value="<?php echo $fsc->agente->codagente;?>">-----</option>
+                     <?php $loop_var1=$fsc->agente->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <option value="<?php echo $value1->codagente;?>"><?php echo $value1->get_fullname();?></option>
+                     <?php } ?>
+
+                  <?php } ?>
+
                </select>
             </div>
          </div>
          <div class="col-lg-3 col-md-3 col-sm-3">
             <div class="form-group">
-               <a href="{$fsc->almacen->url()}">Almacén</a>:
+               <a href="<?php echo $fsc->almacen->url();?>">Almacén</a>:
                <select name="almacen" class="form-control">
-                  {loop="$fsc->almacen->all()"}
-                     {if condition="$value->is_default()"}
-                     <option value="{$value->codalmacen}" selected='selected'>{$value->nombre}</option>
-                     {else}
-                     <option value="{$value->codalmacen}">{$value->nombre}</option>
-                     {/if}
-                  {/loop}
+                  <?php $loop_var1=$fsc->almacen->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <?php if( $value1->is_default() ){ ?>
+
+                     <option value="<?php echo $value1->codalmacen;?>" selected='selected'><?php echo $value1->nombre;?></option>
+                     <?php }else{ ?>
+
+                     <option value="<?php echo $value1->codalmacen;?>"><?php echo $value1->nombre;?></option>
+                     <?php } ?>
+
+                  <?php } ?>
+
                </select>
             </div>
          </div>
          <div class="col-lg-3 col-md-3 col-sm-3">
             <div class="form-group">
-               <a href="{$fsc->serie->url()}">Serie</a>:
+               <a href="<?php echo $fsc->serie->url();?>">Serie</a>:
                <select name="serie" class="form-control" id="codserie" onchange="usar_serie();recalcular();">
-                  {loop="$fsc->serie->all()"}
-                     {if condition="$value->is_default()"}
-                     <option value="{$value->codserie}" selected='selected'>{$value->descripcion}</option>
-                     {else}
-                     <option value="{$value->codserie}">{$value->descripcion}</option>
-                     {/if}
-                  {/loop}
+                  <?php $loop_var1=$fsc->serie->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <?php if( $value1->is_default() ){ ?>
+
+                     <option value="<?php echo $value1->codserie;?>" selected='selected'><?php echo $value1->descripcion;?></option>
+                     <?php }else{ ?>
+
+                     <option value="<?php echo $value1->codserie;?>"><?php echo $value1->descripcion;?></option>
+                     <?php } ?>
+
+                  <?php } ?>
+
                </select>
             </div>
          </div>
          <div class="col-lg-3 col-md-3 col-sm-3">
             <div class="form-group">
-               <a href="{$fsc->divisa->url()}">Divisa</a>:
+               <a href="<?php echo $fsc->divisa->url();?>">Divisa</a>:
                <select name="divisa" class="form-control">
-                  {loop="$fsc->divisa->all()"}
-                     {if condition="$value->is_default()"}
-                     <option value="{$value->coddivisa}" selected="selected">{$value->descripcion}</option>
-                     {else}
-                     <option value="{$value->coddivisa}">{$value->descripcion}</option>
-                     {/if}
-                  {/loop}
+                  <?php $loop_var1=$fsc->divisa->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <?php if( $value1->is_default() ){ ?>
+
+                     <option value="<?php echo $value1->coddivisa;?>" selected="selected"><?php echo $value1->descripcion;?></option>
+                     <?php }else{ ?>
+
+                     <option value="<?php echo $value1->coddivisa;?>"><?php echo $value1->descripcion;?></option>
+                     <?php } ?>
+
+                  <?php } ?>
+
                </select>
             </div>
          </div>
@@ -279,7 +306,7 @@
       </div>
       <div class="row">
          <div class="col-lg-6 col-md-6 col-sm-6">
-            <button class="btn btn-sm btn-default" type="button" onclick="window.location.href='{$fsc->url()}';">
+            <button class="btn btn-sm btn-default" type="button" onclick="window.location.href='<?php echo $fsc->url();?>';">
                <span class="glyphicon glyphicon-refresh"></span> &nbsp; Reiniciar
             </button>
          </div>
@@ -307,24 +334,32 @@
                <h4 class="modal-title">Guardar como...</h4>
             </div>
             <div class="modal-body">
-               {loop="$fsc->tipos_a_guardar()"}
+               <?php $loop_var1=$fsc->tipos_a_guardar(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
                <div class="radio">
                   <label>
-                     <input type="radio" name="tipo" value="{$value['tipo']}"{if condition="$value['tipo']==$fsc->tipo"} checked="checked"{/if}/>
-                     {$value['nombre']}
+                     <input type="radio" name="tipo" value="<?php echo $value1['tipo'];?>"<?php if( $value1['tipo']==$fsc->tipo ){ ?> checked="checked"<?php } ?>/>
+                     <?php echo $value1['nombre'];?>
+
                   </label>
                </div>
-               {/loop}
+               <?php } ?>
+
                <div class="form-group">
-                  <a href="{$fsc->forma_pago->url()}">Forma de pago</a>:
+                  <a href="<?php echo $fsc->forma_pago->url();?>">Forma de pago</a>:
                   <select name="forma_pago" class="form-control">
-                  {loop="$fsc->forma_pago->all()"}
-                     {if condition="$value->is_default()"}
-                     <option value="{$value->codpago}" selected="selected">{$value->descripcion}</option>
-                     {else}
-                     <option value="{$value->codpago}">{$value->descripcion}</option>
-                     {/if}
-                  {/loop}
+                  <?php $loop_var1=$fsc->forma_pago->all(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+                     <?php if( $value1->is_default() ){ ?>
+
+                     <option value="<?php echo $value1->codpago;?>" selected="selected"><?php echo $value1->descripcion;?></option>
+                     <?php }else{ ?>
+
+                     <option value="<?php echo $value1->codpago;?>"><?php echo $value1->descripcion;?></option>
+                     <?php } ?>
+
+                  <?php } ?>
+
                   </select>
                </div>
             </div>
@@ -337,22 +372,24 @@
       </div>
    </div>
 </form>
-{elseif condition="!$fsc->user->get_agente()"}
+<?php }elseif( !$fsc->user->get_agente() ){ ?>
+
 <div class="well well-lg">
    <h1>No puedes entrar aquí</h1>
    <p>
-      No tienes un emleado asociado a tu <a href="{$fsc->user->url()}">usuario</a>.
+      No tienes un emleado asociado a tu <a href="<?php echo $fsc->user->url();?>">usuario</a>.
       Habla con el administrador para que te asigne un empleado.
    </p>
    <p>Si crees que es un error de FacturaScripts, haz clic en el botón de ayuda, arriba a la derecha, e infórmanos del error.</p>
 </div>
-{else}
+<?php }else{ ?>
+
 <script type="text/javascript">
    $(document).ready(function() {
       $("#modal_cliente").modal('show');
       document.f_nueva_venta.ac_cliente.focus();
       $("#ac_cliente").autocomplete({
-         serviceUrl: '{$fsc->url()}',
+         serviceUrl: '<?php echo $fsc->url();?>',
          paramName: 'buscar_cliente',
          onSelect: function (suggestion) {
             if(suggestion)
@@ -367,7 +404,7 @@
    });
 </script>
 
-<form name="f_nueva_venta" class="form" action="{$fsc->url()}" method="post">
+<form name="f_nueva_venta" class="form" action="<?php echo $fsc->url();?>" method="post">
    <input type="hidden" name="cliente"/>
    <div class="modal" id="modal_cliente">
       <div class="modal-dialog">
@@ -379,7 +416,7 @@
             <div class="modal-body">
                <div class="form-group">
                   <input class="form-control" type="text" name="ac_cliente" id="ac_cliente" placeholder="Buscar" autocomplete="off"/>
-                  <p class="help-block"><a href="{$fsc->cliente->url()}#nuevo" target="_blank">Nuevo cliente</a>.</p>
+                  <p class="help-block"><a href="<?php echo $fsc->cliente->url();?>#nuevo" target="_blank">Nuevo cliente</a>.</p>
                </div>
             </div>
             <div class="modal-footer">
@@ -405,6 +442,7 @@
       </div>
    </div>
 </div>
-{/if}
+<?php } ?>
 
-{include="footer"}
+
+<?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("footer") . ( substr("footer",-1,1) != "/" ? "/" : "" ) . basename("footer") );?>
