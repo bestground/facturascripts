@@ -25,6 +25,7 @@ require_model('impuesto.php');
 require_model('tarifa_articulo.php');
 require_model('stock.php');
 require_model('cliente.php');
+require_model('direccion_cliente.php');
 
 /**
  * Representa el artículo que se vende o compra.
@@ -719,6 +720,12 @@ class articulo extends fs_model
             	$cliente->cifnif = $this->tipodni;
             	$cliente->telefono1 = $this->telefonodueno;
             	$cliente->save();
+            	// Creamos la direccion del cliente
+            	$dir_cliente = new direccion_cliente();
+            	$dir_cliente->codcliente = $cliente->codcliente;
+            	$dir_cliente->codpais = 'ESP';
+            	$dir_cliente->descripcion = 'Direccion Facturación';
+            	$dir_cliente->save();
             }
             
             return TRUE;
