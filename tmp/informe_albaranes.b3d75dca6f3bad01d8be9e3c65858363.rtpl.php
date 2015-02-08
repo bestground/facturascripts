@@ -1,4 +1,5 @@
-{include="header"}
+<?php if(!class_exists('raintpl')){exit;}?><?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("header") . ( substr("header",-1,1) != "/" ? "/" : "" ) . basename("header") );?>
+
 
 <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 <script type="text/javascript">
@@ -16,12 +17,14 @@
       // Create the data table.
       var data = new google.visualization.DataTable();
       data.addColumn('string', 'día');
-      data.addColumn('number', 'ventas {$fsc->simbolo_divisa()}');
-      data.addColumn('number', 'compras {$fsc->simbolo_divisa()}');
+      data.addColumn('number', 'ventas <?php echo $fsc->simbolo_divisa();?>');
+      data.addColumn('number', 'compras <?php echo $fsc->simbolo_divisa();?>');
       data.addRows([
-      {loop="$fsc->stats_last_days()"}
-         ['{$value['day']}', {$value['total_cli']}, {$value['total_pro']}],
-      {/loop}
+      <?php $loop_var1=$fsc->stats_last_days(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+         ['<?php echo $value1['day'];?>', <?php echo $value1['total_cli'];?>, <?php echo $value1['total_pro'];?>],
+      <?php } ?>
+
       ]);
       
       // Instantiate and draw our chart, passing in some options.
@@ -31,12 +34,14 @@
       // Create the data table.
       var data2 = new google.visualization.DataTable();
       data2.addColumn('string', 'mes');
-      data2.addColumn('number', 'ventas {$fsc->simbolo_divisa()}');
-      data2.addColumn('number', 'compras {$fsc->simbolo_divisa()}');
+      data2.addColumn('number', 'ventas <?php echo $fsc->simbolo_divisa();?>');
+      data2.addColumn('number', 'compras <?php echo $fsc->simbolo_divisa();?>');
       data2.addRows([
-      {loop="$fsc->stats_last_months()"}
-         ['{$value['month']}', {$value['total_cli']}, {$value['total_pro']}],
-      {/loop}
+      <?php $loop_var1=$fsc->stats_last_months(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+         ['<?php echo $value1['month'];?>', <?php echo $value1['total_cli'];?>, <?php echo $value1['total_pro'];?>],
+      <?php } ?>
+
       ]);
       
       // Instantiate and draw our chart, passing in some options.
@@ -46,12 +51,14 @@
       // Create the data table.
       var data3 = new google.visualization.DataTable();
       data3.addColumn('string', 'año');
-      data3.addColumn('number', 'ventas {$fsc->simbolo_divisa()}');
-      data3.addColumn('number', 'compras {$fsc->simbolo_divisa()}');
+      data3.addColumn('number', 'ventas <?php echo $fsc->simbolo_divisa();?>');
+      data3.addColumn('number', 'compras <?php echo $fsc->simbolo_divisa();?>');
       data3.addRows([
-      {loop="$fsc->stats_last_years()"}
-         ['{$value['year']}', {$value['total_cli']}, {$value['total_pro']}],
-      {/loop}
+      <?php $loop_var1=$fsc->stats_last_years(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
+
+         ['<?php echo $value1['year'];?>', <?php echo $value1['total_cli'];?>, <?php echo $value1['total_pro'];?>],
+      <?php } ?>
+
       ]);
       
       // Instantiate and draw our chart, passing in some options.
@@ -77,7 +84,7 @@
          	<div class="row">                  
 				<div class="panel panel-default" style="margin: 5px;">
 				   <div class="panel-heading">
-					  <h3 class="panel-title"><span class="text-capitalize">{#FS_ALBARANES#}</span> de los últimos días</h3>
+					  <h3 class="panel-title"><span class="text-capitalize"><?php  echo FS_ALBARANES;?></span> de los últimos días</h3>
 				   </div>
 				   <div class="panel-body">
 					  <div id="chart_facturas_day" style="width: 95%; margin-left: auto; margin-right: auto;"></div>
@@ -86,7 +93,7 @@
 
 				<div class="panel panel-default" style="margin: 5px;">
 				   <div class="panel-heading">
-					  <h3 class="panel-title"><span class="text-capitalize">{#FS_ALBARANES#}</span> de los últimos meses</h3>
+					  <h3 class="panel-title"><span class="text-capitalize"><?php  echo FS_ALBARANES;?></span> de los últimos meses</h3>
 				   </div>
 				   <div class="panel-body">
 					  <div id="chart_facturas_month" style="width: 95%; margin-left: auto; margin-right: auto; height: 300px;"></div>
@@ -95,7 +102,7 @@
 
 				<div class="panel panel-default" style="margin: 5px;">
 				   <div class="panel-heading">
-					  <h3 class="panel-title"><span class="text-capitalize">{#FS_ALBARANES#}</span> de los últimos años</h3>
+					  <h3 class="panel-title"><span class="text-capitalize"><?php  echo FS_ALBARANES;?></span> de los últimos años</h3>
 				   </div>
 				   <div class="panel-body">
 					  <div id="chart_facturas_year" style="width: 95%; margin-left: auto; margin-right: auto; height: 300px;"></div>
@@ -110,7 +117,7 @@
          	<div class="row">
             <div class="col-lg-6 col-md-6 col-sm-6">
                
-               <form action="{$fsc->url()}" method="post" target="_blank" class="form">
+               <form action="<?php echo $fsc->url();?>" method="post" target="_blank" class="form">
                   <input type="hidden" name="listado" value="albaranescli"/>
                   <div class="panel panel-info">
                      <div class="panel-heading">
@@ -119,11 +126,11 @@
                      <div class="panel-body">
                         <div class="form-group col-md-3">
                            Desde:
-                           <input class="form-control datepicker" type="text" name="dfecha" value="{$fsc->desde}" size="12"/>
+                           <input class="form-control datepicker" type="text" name="dfecha" value="<?php echo $fsc->desde;?>" size="12"/>
                         </div>
                         <div class="form-group col-md-3">
                            Hasta:
-                           <input class="form-control datepicker" type="text" name="hfecha" value="{$fsc->hasta}" size="12"/>
+                           <input class="form-control datepicker" type="text" name="hfecha" value="<?php echo $fsc->hasta;?>" size="12"/>
                         </div>
 
                         <div class="form-group col-md-3">
@@ -145,4 +152,4 @@
 		</div>
 	</div>
 </div>
-{include="footer"}
+<?php $tpl = new RainTPL;$tpl_dir_temp = self::$tpl_dir;$tpl->assign( $this->var );$tpl->draw( dirname("footer") . ( substr("footer",-1,1) != "/" ? "/" : "" ) . basename("footer") );?>

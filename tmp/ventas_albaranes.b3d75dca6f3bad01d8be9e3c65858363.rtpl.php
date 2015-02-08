@@ -66,7 +66,7 @@
          
          <div class="btn-group">
             <a class="btn btn-sm btn-success" href="index.php?page=nueva_venta&tipo=albaran">
-               <span class="glyphicon glyphicon-plus"></span> &nbsp; Nuevo
+               <span class="glyphicon glyphicon-plus"></span> &nbsp; Nueva
             </a>
             
             <!-- CAMBIO
@@ -115,7 +115,7 @@
 
 <ul class="nav nav-tabs" role="tablist">
    <li<?php if( !$fsc->pendientes ){ ?> class="active"<?php } ?>>
-      <a href="<?php echo $fsc->url();?>&ptefactura=FALSE">Todos los <?php  echo FS_ALBARANES;?></a>
+      <a href="<?php echo $fsc->url();?>&ptefactura=FALSE">Todas las <?php  echo FS_ALBARANES;?></a>
    </li>
    <!-- CAMBIO
    <li<?php if( $fsc->pendientes ){ ?> class="active"<?php } ?>>

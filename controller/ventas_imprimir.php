@@ -254,9 +254,12 @@ class ventas_imprimir extends fs_controller
                array(
                   'descripcion' => '<b>Descripción</b>',
                   'cantidad' => '<b>Cantidad</b>',
-                  'pvp' => '<b>PVP</b>',
-                  'dto' => '<b>DTO</b>',
-                  'importe' => '<b>Importe</b>'
+                  'pvp' => '<b>Precio/Unidad</b>',
+                  'com_porcentaje' => '<b>%COMISIÓN</b>',
+                  'com_total' => '<b>€ COMISIÓN</b>',
+                  'total_menos_comision' => '<b>Total Euro</b>',
+                  'com_iva' => '<b>IVA de Comisión</b>',
+                  'neto_real' => '<b>Neto real</b>'
                )
             );
             $saltos = 0;
@@ -275,8 +278,11 @@ class ventas_imprimir extends fs_controller
                   'descripcion' => $lineas[$linea_actual]->descripcion,
                   'cantidad' => $lineas[$linea_actual]->cantidad,
                   'pvp' => $this->show_precio($lineas[$linea_actual]->pvpunitario, $this->albaran->coddivisa),
-                  'dto' => $this->show_numero($lineas[$linea_actual]->dtopor, 0) . " %",
-                  'importe' => $this->show_precio($lineas[$linea_actual]->pvptotal, $this->albaran->coddivisa)
+                  'com_porcentaje' => $this->show_numero($lineas[$linea_actual]->com_porcentaje, 0) . " %",
+                  'com_total' => $this->show_precio($lineas[$linea_actual]->com_total, $this->albaran->coddivisa),
+                  'total_menos_comision' => $this->show_precio($lineas[$linea_actual]->total_menos_comision, $this->albaran->coddivisa),
+                  'com_iva' => $this->show_precio($lineas[$linea_actual]->com_iva, $this->albaran->coddivisa),
+                  'neto_real' => $this->show_precio($lineas[$linea_actual]->neto_real,$this->albaran->coddivisa)
                );
                
                $pdf_doc->add_table_row($fila);
@@ -289,8 +295,12 @@ class ventas_imprimir extends fs_controller
                    'cols' => array(
                        'cantidad' => array('justification' => 'right'),
                        'pvp' => array('justification' => 'right'),
-                       'dto' => array('justification' => 'right'),
-                       'importe' => array('justification' => 'right')
+                       'com_porcentaje' => array('justification' => 'right'),
+                       'com_total' => array('justification' => 'right'),
+                       'total_menos_comision' => array('justification' => 'right'),
+                       'com_iva' => array('justification' => 'right'),
+                       'importe' => array('justification' => 'right'),
+                       'neto_real' => array('justification' => 'right')
                    ),
                    'width' => 540,
                    'shaded' => 0
@@ -311,6 +321,17 @@ class ventas_imprimir extends fs_controller
                $saltos += count( explode("\n", $this->albaran->observaciones) ) - 1;
             }
             
+            // Imprimimos mensaje
+            $mensaje = "\n\nEn cumplimiento de la Ley Orgánica de Protección de datos de Carácter Personal 15/1999, le informamos\n";
+            $mensaje .= "que sus datos personales, obtenidos por medio de nuestra relación comercial, se encuentran recogidos\n";
+            $mensaje .= "en un Fichero responsabilidad de VENDETU  con la única finalidad de mantener, gestionar y administrar\n";
+            $mensaje .= "ésta relación. Sus datos no serán cedidos a terceros, sin su consentimiento, salvo que la ley lo permita.\n";
+            $mensaje .= "Si Ud. desea ejercer sus derechos de acceso, rectificación, cancelación y oposición, puede dirigirse a\n";
+            $mensaje .= "nuestras oficinas en C/Pablo Remacha, 15, local 2 de Zaragoza o a través del e-mail vendetu_segundano@outlook.es\n";
+            $salto .= $mensaje;
+            
+            $saltos += 8;
+            
             if($saltos < $lppag)
             {
                for(;$saltos < $lppag; $saltos++)
@@ -329,18 +350,32 @@ class ventas_imprimir extends fs_controller
              * Página            Neto    IVA   Total
              */
             $pdf_doc->new_table();
-            $titulo = array('pagina' => '<b>Página</b>', 'neto' => '<b>Neto</b>',);
+            $titulo = array(
+            	'pagina' => '<b>Página</b>', 
+            	'total_bruto' => '<b>Total Bruto</b>',
+            	'importe_iva' => '<b>Importe IVA</b>',
+            	'total_factura' => '<b>Total Factura</b>',
+            	'pago_senor' => '<b>Pago señor/a</b>'
+            );
             $fila = array(
                 'pagina' => $pagina . '/' . ceil(count($lineas) / $lppag),
-                'neto' => $this->show_precio($this->albaran->neto, $this->albaran->coddivisa),
+                'total_bruto' => $this->show_precio($this->albaran->total_bruto, $this->albaran->coddivisa),
+                'importe_iva' => $this->show_precio($this->albaran->importe_iva, $this->albaran->coddivisa),
+                'total_factura' => $this->show_precio($this->albaran->total_factura, $this->albaran->coddivisa),
+                'pago_senor' => $this->show_precio($this->albaran->pago_senor, $this->albaran->coddivisa)
             );
             $opciones = array(
                 'cols' => array(
-                    'neto' => array('justification' => 'right'),
+                    'total_bruto' => array('justification' => 'right'),
+                    'importe_iva' => array('justification' => 'right'),
+                    'total_factura' => array('justification' => 'right'),
+                    'pago_senor' => array('justification' => 'right')
                 ),
                 'showLines' => 4,
                 'width' => 540
             );
+            
+            /* CAMBIOS
             foreach($impuestos as $i => $value)
             {
                $imp = $this->impuesto->get($i);
@@ -365,6 +400,8 @@ class ventas_imprimir extends fs_controller
             $titulo['liquido'] = '<b>Total</b>';
             $fila['liquido'] = $this->show_precio($this->albaran->total, $this->albaran->coddivisa);
             $opciones['cols']['liquido'] = array('justification' => 'right');
+            */
+            
             $pdf_doc->add_table_header($titulo);
             $pdf_doc->add_table_row($fila);
             $pdf_doc->save_table($opciones);

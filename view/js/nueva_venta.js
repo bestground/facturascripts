@@ -211,7 +211,7 @@ function recalcular()
 			$("#com_total_"+i).val( show_numero(l_com_total) );
 			$("#total_menos_comision_"+i).val( show_numero(l_total_menos_comision) );
 			$("#com_iva_"+i).val( show_numero(l_iva_comision) );
-			$("#total_"+i).val( show_numero(l_neto_real) );
+			$("#neto_real_"+i).val( show_numero(l_neto_real) );
 			
 			total_bruto += parseFloat(_cp(l_com_total));
 			importe_iva += parseFloat(_cp(l_iva_comision));
@@ -440,8 +440,8 @@ function add_articulo(ref,desc,pvp,dto,codimpuesto,comision)
          "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
       <td><input type=\"text\" class=\"form-control text-right\" id=\"com_iva_"+numlineas+"\" name=\"com_iva_"+numlineas+"\" value=\""+com_iva+
          "\" onkeyup=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td>\n\
-      <td><input type=\"text\" class=\"form-control text-right\" id=\"total_"+numlineas+"\" name=\"total_"+numlineas+"\" value=\""+neto_real+
-         "\" onchange=\"ajustar_total()\" onclick=\"this.select()\" autocomplete=\"off\"/></td></tr>");
+      <td><input type=\"text\" class=\"form-control text-right\" id=\"neto_real_"+numlineas+"\" name=\"neto_real_"+numlineas+"\" value=\""+neto_real+
+         "\" onchange=\"recalcular()\" onclick=\"this.select()\" autocomplete=\"off\"/></td></tr>");
    numlineas += 1;
    $("#numlineas").val(numlineas);
    

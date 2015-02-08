@@ -95,9 +95,11 @@
 
                <?php if( $fsc->albaran->ptefactura ){ ?>
 
+               <!--
                <a class="btn btn-sm btn-default" href="<?php echo $fsc->url();?>&facturar=TRUE&petid=<?php echo $fsc->random_string();?>">
                   <span class="glyphicon glyphicon-paperclip"></span> &nbsp; Aprobar
                </a>
+               -->
                <?php }else{ ?>
 
                <a class="btn btn-sm btn-default text-capitalize" href="<?php echo $fsc->albaran->factura_url();?>">
@@ -167,13 +169,19 @@
          </div>
          <?php } ?>
 
+         
          <div class="col-md-2 col-sm-2">
+         <!--
             <div class="form-group">
                Número 2:
                <input class="form-control" type="text" name="numero2" value="<?php echo $fsc->albaran->numero2;?>"/>
             </div>
+                     -->
          </div>
+
+         
          <div class="col-md-2 col-sm-2">
+         <!--
             <div class="form-group">
                <a href="<?php echo $fsc->serie->url();?>">Serie</a>:
                <?php if( $fsc->albaran->ptefactura ){ ?>
@@ -198,6 +206,7 @@
                <?php } ?>
 
             </div>
+            -->
          </div>
          <div class="col-md-2 col-sm-2">
             <div class="form-group">
@@ -295,8 +304,8 @@
                                   onchange="recalcular()" onclick="this.select()" autocomplete="off"/>                        </td>
 
                         <td>
-                           <input type="text" class="form-control text-right" id="total_<?php echo $counter1;?>" name="total_<?php echo $counter1;?>"
-                                  onchange="ajustar_total()" onclick="this.select()" autocomplete="off"/>
+                           <input type="text" class="form-control text-right" id="neto_real_<?php echo $counter1;?>" name="neto_real_<?php echo $counter1;?>"
+                                  onchange="recalcular()" onclick="this.select()" autocomplete="off"/>
                         </td>
                      </tr>
                      <?php } ?>

@@ -334,6 +334,7 @@
                <h4 class="modal-title">Guardar como...</h4>
             </div>
             <div class="modal-body">
+               <!--
                <?php $loop_var1=$fsc->tipos_a_guardar(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
 
                <div class="radio">
@@ -345,6 +346,13 @@
                </div>
                <?php } ?>
 
+               -->
+               <div class="radio">
+               		<label>
+               		<input type="radio" name="tipo" value="albaran" checked="checked"> Factura de Cliente
+               		</label>
+               </div>
+               
                <div class="form-group">
                   <a href="<?php echo $fsc->forma_pago->url();?>">Forma de pago</a>:
                   <select name="forma_pago" class="form-control">
