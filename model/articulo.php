@@ -24,6 +24,7 @@ require_model('familia.php');
 require_model('impuesto.php');
 require_model('tarifa_articulo.php');
 require_model('stock.php');
+require_model('cliente.php');
 
 /**
  * Representa el artículo que se vende o compra.
@@ -703,9 +704,23 @@ class articulo extends fs_model
                ".$this->var2str($this->publico).");";
          }
          
+         
          if( $this->db->exec($sql) )
          {
             $this->exists = TRUE;
+            
+            // Creamos un nuevo cliente si no existe ningún cliente con el dni
+            $cliente = new cliente();
+            $clientes = $cliente->search_by_dni($this->tipodni);
+            if (empty($clientes)) {
+            	$cliente->codcliente = $cliente->get_new_codigo();
+            	$cliente->nombre = $this->dueno;
+            	$cliente->nombrecomercial = $this->dueno;
+            	$cliente->cifnif = $this->tipodni;
+            	$cliente->telefono1 = $this->telefonodueno;
+            	$cliente->save();
+            }
+            
             return TRUE;
          }
          else

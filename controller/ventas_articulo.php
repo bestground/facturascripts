@@ -145,6 +145,12 @@ class ventas_articulo extends fs_controller
          $this->articulo->observaciones = $_POST['observaciones'];
          $this->articulo->stockmin = $_POST['stockmin'];
          $this->articulo->stockmax = $_POST['stockmax'];
+         $this->articulo->dueno = $_POST['dueno'];
+         $this->articulo->tipodni = $_POST['tipodni'];
+         $this->articulo->telefonodueno = $_POST['telefonodueno'];
+         $this->articulo->fentrada = $_POST['fentrada'];
+         $this->articulo->fsalida = $_POST['fsalida'];
+         
          if( $this->articulo->save() )
          {
             $this->new_message("Datos del articulo modificados correctamente");
