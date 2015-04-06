@@ -50,6 +50,7 @@ class linea_albaran_cliente extends fs_model
    public $total_menos_comision;
    public $com_iva;
    public $neto_real;
+   public $fecha_entrada;
    
    private static $albaranes;
 
@@ -82,6 +83,7 @@ class linea_albaran_cliente extends fs_model
          $this->total_menos_comision = floatval($l['total_menos_comision']);
          $this->com_iva = floatval($l['com_iva']);
          $this->neto_real = floatval($l['neto_real']);
+         $this->fecha_entrada = Date('d-m-Y', strtotime($l['fecha_entrada']));
       }
       else
       {
@@ -105,6 +107,7 @@ class linea_albaran_cliente extends fs_model
          $this->total_menos_comision = 0;
          $this->com_iva = 0;
          $this->neto_real = 0;         
+         $this->fecha_entrada = NULL;
       }
    }
    
@@ -258,6 +261,7 @@ class linea_albaran_cliente extends fs_model
             	total_menos_comision = ".$this->var2str($this->total_menos_comision).",
             	com_iva = ".$this->var2str($this->com_iva).",
             	neto_real = ".$this->var2str($this->neto_real).",
+            	fecha_entrada = ".$this->var2str($this->fecha_entrada).",
                	referencia = ".$this->var2str($this->referencia).",
                	descripcion = ".$this->var2str($this->descripcion).",
                	cantidad = ".$this->var2str($this->cantidad).", dtopor = ".$this->var2str($this->dtopor).",
@@ -273,7 +277,7 @@ class linea_albaran_cliente extends fs_model
          {
             $this->new_idlinea();
             $sql = "INSERT INTO ".$this->table_name." (idlinea,idalbaran,referencia,descripcion,
-               cantidad,dtopor,dtolineal,codimpuesto,iva,pvptotal,pvpsindto,pvpunitario,com_total,com_porcentaje,total_menos_comision,com_iva,neto_real,irpf,recargo)
+               cantidad,dtopor,dtolineal,codimpuesto,iva,pvptotal,pvpsindto,pvpunitario,com_total,com_porcentaje,total_menos_comision,com_iva,neto_real,fecha_entrada,irpf,recargo)
                VALUES (".$this->var2str($this->idlinea).",".$this->var2str($this->idalbaran).",
                ".$this->var2str($this->referencia).",".$this->var2str($this->descripcion).",
                ".$this->var2str($this->cantidad).",".$this->var2str($this->dtopor).",
@@ -282,7 +286,7 @@ class linea_albaran_cliente extends fs_model
                ".$this->var2str($this->pvpsindto).",".$this->var2str($this->pvpunitario).",
                ".$this->var2str($this->com_total).",".$this->var2str($this->com_porcentaje).",
                ".$this->var2str($this->total_menos_comision).",".$this->var2str($this->com_iva).",
-               ".$this->var2str($this->neto_real).",
+               ".$this->var2str($this->neto_real).",".$this->var2str($this->fecha_entrada).",
                ".$this->var2str($this->irpf).",".$this->var2str($this->recargo).");";
          }
 

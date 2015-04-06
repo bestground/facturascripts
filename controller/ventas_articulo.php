@@ -161,11 +161,19 @@ class ventas_articulo extends fs_controller
       }
       else if( isset($_GET['ref']) )
       {
-         $this->articulo = $articulo->get($_GET['ref']);
+         $this->articulo = $articulo->get($_GET['ref']);		 
       }
       
       if($this->articulo)
       {
+         // Obtenemos los datos del dueño
+         $tmp_art = $this->articulo->search_by_ref($this->articulo->referencia);
+         if (!empty($tmp_art)) {
+            $this->articulo->dueno = $tmp_art['dueno'];
+            $this->articulo->tipodni = $tmp_art['tipodni'];
+            $this->articulo->telefonodueno = $tmp_art['telefonodueno'];            
+         }
+         
          $this->page->title = $this->articulo->referencia;
          
          if($this->articulo->bloqueado)

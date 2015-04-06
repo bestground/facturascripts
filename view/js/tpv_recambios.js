@@ -176,7 +176,8 @@ function buscar_articulos()
 
 $(document).ready(function() {
    $("#b_reticket").click(function() {
-      window.location.href = tpv_url+"&reticket="+prompt('Introduce el'+' código del ticket (o déjalo en blanco para re-imprimir el último):');
+      //window.location.href = tpv_url+"&reticket="+prompt('Introduce el'+' código del ticket (o déjalo en blanco para re-imprimir el último):');
+   	  window.open(tpv_url+"&reticket="+prompt('Introduce el'+' código del ticket (o déjalo en blanco para re-imprimir el último):'), '_blank')
    });
    
    $("#b_borrar_ticket").click(function() {

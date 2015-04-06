@@ -28,6 +28,11 @@ var fin_busqueda2 = true;
 var siniva = false;
 var irpf = 0;
 
+function mysqlDate(date){
+    date = date || new Date();
+    return date.toISOString().split('T')[0];
+}
+
 function usar_cliente(codcliente)
 {
    if(nueva_venta_url !== '')
@@ -526,7 +531,6 @@ function buscar_articulos()
             var items = [];
             var insertar = false;
             var fec_actual = new Date();
-			console.log(fec_actual);
             
             $.each(json, function(key, val) {
                var f_arr = val.fentrada.split("-");

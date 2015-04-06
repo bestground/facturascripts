@@ -1,1 +1,180 @@
-p0 p0 p0 
+p0 
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+
+Ticket: 00010A000033 27-02-2015 14:08
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 REF100/1                        1,21
+----------------------------------------
+     IVA: 0,21 EUR   Total: 1,21 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+p0 
+Ticket: 00010A000034 27-02-2015 14:28
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 borrame_cuatro                 12,10
+----------------------------------------
+    IVA: 2,10 EUR   Total: 12,10 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+
+p0 
+Ticket: 00010A000035 27-02-2015 14:30
+Cliente: dueño borrame cuatro
+Empleado: 1
+
+Ud. Articulo                       TOTAL
+--- ------------------------- ----------
+  1 borrame_cuatro                 12,10
+----------------------------------------
+    IVA: 2,10 EUR   Total: 12,10 EUR    
+
+
+
+!8     Vendetu    
+!
+     Pablo Remacha nº15 - Zaragoza     
+             CIF: 25444457-V            i
+

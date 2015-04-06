@@ -21,6 +21,7 @@ require_model('articulo.php');
 require_model('familia.php');
 require_model('impuesto.php');
 require_model('tarifa.php');
+require_model('fs_var.php');
 
 class ventas_articulos extends fs_controller
 {
@@ -31,6 +32,7 @@ class ventas_articulos extends fs_controller
    public $offset;
    public $resultados;
    public $tarifa;
+   public $ultima_referencia;
    
    public function __construct()
    {
@@ -39,6 +41,12 @@ class ventas_articulos extends fs_controller
    
    protected function process()
    {
+   		// Obtenemos la ultima referencia añadida
+   		$fs_var = new fs_var();
+   		
+   		$reg = $fs_var->simple_get('ultima_referencia_articulo');
+   		$this->ultima_referencia = $reg[0]['varchar'];
+   		
       $this->custom_search = TRUE;
       $articulo = new articulo();
       $this->familia = new familia();

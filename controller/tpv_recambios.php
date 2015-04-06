@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require_once 'base/fs_pdf.php';
 require_once 'base/fs_printer.php';
 require_model('agente.php');
 require_model('albaran_cliente.php');
@@ -516,9 +517,96 @@ class tpv_recambios extends fs_controller
       else
          $this->new_error_msg("Ticket no encontrado.");
    }
-   
+
+/**
+ * Generación de un ticket en formato PDF
+ *
+ */   
+    private function imprimir_ticket($albaran, $num_tickets=1, $cajon=TRUE) {
+    	$this->template = FALSE;
+    	$pdf_doc = new fs_pdf('a4', 'landscape', 'Courier');
+    	
+    	$linea = "<b>Ticket: </b>" . $albaran->codigo;
+        $linea .= " " . $albaran->fecha;
+        $linea .= " " . $albaran->show_hora(FALSE);
+         
+        $pdf_doc->pdf->ezText($linea, 14);
+         
+        /*
+        $linea = "<b>Cliente:</b> " . $albaran->nombrecliente;
+        $pdf_doc->pdf->ezText($linea, 14);
+		*/
+		
+		$linea = "<b>Empleado: </b>" . $albaran->codagente;        
+		$pdf_doc->pdf->ezText($linea, 14);
+
+         if($this->imprimir_observaciones)
+         {
+         	$linea = 'Observaciones: '.$albaran->observaciones;
+     		$pdf_doc->pdf->ezText($linea, 12);            
+         }
+		
+		$pdf_doc->pdf->ezText("\n", 10);
+		
+		$linea = sprintf("%3s", "Ud.")." ".sprintf("%-25s", "Artículo")." ".sprintf("%10s", "TOTAL");
+		$pdf_doc->pdf->ezText($linea, 14); 
+		
+		$linea = sprintf("%3s", "---")." ".sprintf("%-25s", "-------------------------")." ".sprintf("%10s", "----------");
+    	$pdf_doc->pdf->ezText($linea, 14); 
+
+         foreach($albaran->get_lineas() as $col)
+         {
+            if($this->imprimir_descripciones)
+            {
+               $linea = sprintf("%3s", $col->cantidad)." ".sprintf("%-25s", substr($col->descripcion, 0, 24))." "
+                  .sprintf("%10s", $this->show_numero($col->total_iva()));
+            }
+            else
+            {
+               $linea = sprintf("%3s", $col->cantidad)." ".sprintf("%-25s", $col->referencia)." "
+                  .sprintf("%10s", $this->show_numero($col->total_iva()));
+            }
+            
+            $pdf_doc->pdf->ezText($linea, 14);             
+        }
+
+        $linea = "----------------------------------------";
+        $pdf_doc->pdf->ezText($linea, 14); 
+        
+        $linea = "IVA: ".$this->show_precio($albaran->totaliva, $albaran->coddivisa, FALSE).'   '.
+               "Total: ".$this->show_precio($albaran->total, $albaran->coddivisa, FALSE);
+        $pdf_doc->pdf->ezText($linea, 14);
+           
+        $pdf_doc->pdf->ezText("\n", 10);
+          
+    	$linea = '<b>' . $this->empresa->nombre . '</b>';
+    	$pdf_doc->pdf->ezText($linea, 16);
+ 
+         if($this->empresa->lema != '') {
+            $linea = $this->empresa->lema . "\n";
+            $pdf_doc->pdf->ezText($linea, 12);
+         }     
+                     
+    	$linea = $this->empresa->direccion . " - " . $this->empresa->ciudad;
+    	$pdf_doc->pdf->ezText($linea, 10);
+    		
+    	$linea = "CIF: " . $this->empresa->cifnif;
+    	$pdf_doc->pdf->ezText($linea, 10);
+    	          	
+    	if($this->empresa->horario != '') {
+            $this->empresa->horario;
+            $pdf_doc->pdf->ezText($linea, 10);
+    	}
+    	          	
+    	$pdf_doc->show();
+    }
+    
+    
+   /*
+   FUNCION QUE IMPRIME EN LA IMPRESORA
    private function imprimir_ticket($albaran, $num_tickets=1, $cajon=TRUE)
    {
+   	  $tpdf = "";
       $fpt = new fs_printer();
       
       if($cajon)
@@ -529,17 +617,30 @@ class tpv_recambios extends fs_controller
          $linea = "\nTicket: " . $albaran->codigo;
          $linea .= " " . $albaran->fecha;
          $linea .= " " . $albaran->show_hora(FALSE) . "\n";
+         
+    $tpdf = $linea;
+         
          $fpt->add($linea);
          $fpt->add("Cliente: " . $albaran->nombrecliente . "\n");
          $fpt->add("Empleado: " . $albaran->codagente . "\n\n");
+   
+   $tpdf .= "Cliente: " . $albaran->nombrecliente . "\n";
+   $tpdf .= "Empleado: " . $albaran->codagente . "\n\n";
          
          if($this->imprimir_observaciones)
          {
             $fpt->add('Observaciones: '.$albaran->observaciones."\n\n");
+            
+   $tpdf .= 'Observaciones: '.$albaran->observaciones."\n\n";      
+            
          }
          
          $fpt->add(sprintf("%3s", "Ud.")." ".sprintf("%-25s", "Articulo")." ".sprintf("%10s", "TOTAL")."\n");
          $fpt->add(sprintf("%3s", "---")." ".sprintf("%-25s", "-------------------------")." ".sprintf("%10s", "----------")."\n");
+         
+    $tpdf .= sprintf("%3s", "Ud.")." ".sprintf("%-25s", "Articulo")." ".sprintf("%10s", "TOTAL")."\n"; 
+    $tcpdf .= sprintf("%3s", "---")." ".sprintf("%-25s", "-------------------------")." ".sprintf("%10s", "----------")."\n";
+         
          foreach($albaran->get_lineas() as $col)
          {
             if($this->imprimir_descripciones)
@@ -554,6 +655,7 @@ class tpv_recambios extends fs_controller
             }
             
             $fpt->add($linea);
+            
          }
          
          $linea = "----------------------------------------\n"
@@ -563,8 +665,12 @@ class tpv_recambios extends fs_controller
             )."\n\n\n\n";
          $fpt->add($linea);
          
-         $fpt->add_big( $fpt->center_text($this->empresa->nombre, 16)."\n");
+    $tcpdf .= $linea;    
          
+         $fpt->add_big( $fpt->center_text($this->empresa->nombre, 16)."\n");
+    
+    $tcpdf .= $this->empresa->nombre;
+      
          if($this->empresa->lema != '')
             $fpt->add( $fpt->center_text($this->empresa->lema) . "\n\n");
          else
@@ -578,6 +684,9 @@ class tpv_recambios extends fs_controller
          
          $fpt->imprimir();
          $num_tickets--;
+ 
+
       }
    }
+   */
 }

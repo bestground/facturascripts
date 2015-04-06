@@ -8,12 +8,18 @@
    <link rel="shortcut icon" href="view/img/favicon.ico" />
    <link rel="stylesheet" href="view/css/bootstrap-yeti.min.css" />
    <link rel="stylesheet" href="view/css/datepicker.css" />
+   
    <link rel="stylesheet" href="view/css/custom.css" />
+   <link rel="stylesheet" href="view/css/select2.css" />
+   
    <script type="text/javascript" src="view/js/jquery-2.1.1.min.js"></script>
    <script type="text/javascript" src="view/js/bootstrap.min.js"></script>
    <script type="text/javascript" src="view/js/bootstrap-datepicker.js" charset="UTF-8"></script>
    <script type="text/javascript" src="view/js/jquery.autocomplete.min.js"></script>
-   <script type="text/javascript" src="view/js/base.js"></script>
+   <script type="text/javascript" src="view/js/base.js"></script>   
+   <script type="text/javascript" src="view/js/select2.js"></script>
+   <script type="text/javascript" src="view/js/select2_locale.js"></script>
+   
    <script type="text/javascript">
       function show_precio(precio)
       {
@@ -23,6 +29,7 @@
          return '{$fsc->simbolo_divisa()}'+number_format(precio, {#FS_NF0#}, '{#FS_NF1#}', '{#FS_NF2#}');
          {/if}
       }
+      
       function show_numero(numero)
       {
          return number_format(numero, {#FS_NF0#}, '{#FS_NF1#}', '{#FS_NF2#}');

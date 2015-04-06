@@ -59,7 +59,7 @@
          <div class="col-lg-6 col-md-6 col-sm-6">
             <div class="form-group">
                Cliente:
-               <select class="form-control" name="cliente">
+               <select class="form-control" name="cliente" id="cliente_select">
                <?php $loop_var1=$fsc->cliente->all_full(); $counter1=-1; if($loop_var1) foreach( $loop_var1 as $key1 => $value1 ){ $counter1++; ?>
 
                   <?php if( $value1->is_default() ){ ?>
@@ -272,7 +272,7 @@
             </button>
          </div>
          <div class="col-lg-6 col-md-6 col-sm-6 text-right">
-            <button class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true;this.form.submit();">
+            <button target="_blank" class="btn btn-sm btn-primary" type="submit" onclick="this.disabled=true; this.form.target = '_blank'; this.form.submit();">
                <span class="glyphicon glyphicon-floppy-disk"></span> &nbsp; Guardar
             </button>
          </div>
@@ -333,3 +333,9 @@
       </div>
    </div>
 </div>
+
+<script>
+	$(document).ready(function() {
+		$("#cliente_select").select2();
+	});
+</script>>

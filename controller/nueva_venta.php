@@ -393,6 +393,7 @@ class nueva_venta extends fs_controller
                   if($articulo)
                   {
                      $linea = new linea_albaran_cliente();
+                     $linea->fecha_entrada = $articulo->fentrada;
                      $linea->idalbaran = $albaran->idalbaran;
                      $linea->referencia = $articulo->referencia;
                      $linea->descripcion = $_POST['desc_'.$i];

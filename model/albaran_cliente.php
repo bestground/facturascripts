@@ -604,7 +604,22 @@ class albaran_cliente extends fs_model
       }
       return $alblist;
    }
-   
+
+   public function all_desde_por_cliente($desde, $hasta, $codcliente)
+   {
+      $alblist = array();
+      $albaranes = $this->db->select("SELECT * FROM ".$this->table_name.
+         " WHERE fecha >= ".$this->var2str($desde)." AND fecha <= ".$this->var2str($hasta).
+         " AND codcliente = " . $this->var2str($codcliente) . 
+         " ORDER BY codigo ASC;");
+      if($albaranes)
+      {
+         foreach($albaranes as $a)
+            $alblist[] = new albaran_cliente($a);
+      }
+      return $alblist;
+   }
+      
    public function search($query, $offset=0)
    {
       $alblist = array();

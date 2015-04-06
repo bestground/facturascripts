@@ -26,6 +26,7 @@ require_model('tarifa_articulo.php');
 require_model('stock.php');
 require_model('cliente.php');
 require_model('direccion_cliente.php');
+require_model('fs_var.php');
 
 /**
  * Representa el artículo que se vende o compra.
@@ -61,7 +62,6 @@ class articulo extends fs_model
    public $tipodni;
    public $fentrada;
    public $fsalida;
-   
       
    private $imagen;
    private $has_imagen;
@@ -649,6 +649,8 @@ class articulo extends fs_model
    
    public function save()
    {
+   		$update_referencia = false;
+   		
       if( $this->test() )
       {
          $this->clean_cache();
@@ -703,12 +705,20 @@ class articulo extends fs_model
                
                ".$this->var2str($this->observaciones).",".$this->bin2str($this->imagen).",
                ".$this->var2str($this->publico).");";
+               
+            $update_referencia = true;
          }
          
          
          if( $this->db->exec($sql) )
          {
             $this->exists = TRUE;
+            
+            // Si es un articulo nuevo actualizamos la referencia
+            if ($update_referencia) {
+   				$fs_var = new fs_var();   		
+   				$fs_var->simple_save('ultima_referencia_articulo', $this->referencia);   				        
+            }
             
             // Creamos un nuevo cliente si no existe ningún cliente con el dni
             $cliente = new cliente();
@@ -923,6 +933,27 @@ class articulo extends fs_model
             $artilist[] = new articulo($a);
       }
       return $artilist;
+   }
+   
+   /**
+    * Buscamos un articulo que tenga como referencia $ref . '/'
+    * para obtener los datos del dueño
+    */
+   public function search_by_ref($ref) {
+   	  $tmp_data = explode("/", $ref);
+      $head_ref = $tmp_data[0] . '/' . $tmp_data[1];
+         
+      $art_data = array();
+
+	  $sql = "SELECT * FROM articulos WHERE referencia LIKE '" . $head_ref . "/%' AND referencia <> '" . $ref . "'";
+   	  $articulos = $this->db->select($sql);
+   	  
+   	  if ($articulos) {
+   	     $art_data['dueno'] = $articulos[0]['dueno'];
+   	     $art_data['tipodni'] = $articulos[0]['tipodni'];
+   	     $art_data['telefonodueno'] = $articulos[0]['telefonodueno'];
+   	  }
+   	  return $art_data;
    }
    
    public function multiplicar_precios($codfam, $m=1)

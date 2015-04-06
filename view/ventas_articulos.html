@@ -213,6 +213,11 @@
             </div>
             {if condition="$fsc->familia->all()"}
             <div class="modal-body">
+            	<div class="form-group">
+            		<div class="alert alert-success" role="alert">
+            		<strong>Última Referencia añadida: {$fsc->ultima_referencia}</strong>
+            		</div>
+            	</div>
                <div class="form-group">
                   <label for="referencia" class="col-lg-2 col-md-2 col-sm-2 control-label">Referencia</label>
                   <div class="col-lg-10 col-md-10 col-sm-10">

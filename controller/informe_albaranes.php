@@ -20,12 +20,14 @@
 require_once 'base/fs_pdf.php';
 require_model('albaran_cliente.php');
 require_model('albaran_proveedor.php');
+require_model('cliente.php');
 
 class informe_albaranes extends fs_controller
 {
 	public $desde;
 	public $hasta;
 	public $albaran_cli;
+	public $options_cli;
 	
 	public function __construct()
 	{
@@ -47,10 +49,26 @@ class informe_albaranes extends fs_controller
 				if($_POST['generar'] == 'pdf') {
 					$this->pdf_albaranes_cli();
 				}
+			} elseif ($_POST['listado'] == 'albaranesclibycli') {
+				if($_POST['generar'] == 'pdf') {
+					$this->pdf_albaranes_cli_by_cli();
+				}			
 			}
 		}
 	}
 
+	public function get_options_client() {
+		$select_options = "<option value='0'>Seleccione un Cliente</option>";
+		$cliente = new cliente();
+		$clientes = $cliente->all();
+		
+		foreach ($clientes as $cli) {
+			$select_options .= "<option value='". $cli->codcliente ."'>". $cli->nombre ."</option>";
+		}
+
+		return $select_options;
+	}
+	
 	public function stats_last_days()
 	{
 	  $stats = array();
@@ -244,7 +262,107 @@ class informe_albaranes extends fs_controller
   
 	  return $dates;
 	}
-	
+
+    private function pdf_albaranes_cli_by_cli()
+    {
+   		$sum_total_bruto = 0;
+   		$sum_importe_iva = 0;
+   		$sum_total_factura = 0;
+   		$sum_pago_senor = 0;
+   		
+   		// Obtenemos los datos del cliente
+   		$cli = new cliente();
+   		$alb_cliente = $cli->get($_POST['nombre_cliente']);
+   		
+		/// desactivamos el motor de plantillas
+      	$this->template = FALSE;
+      
+      	$pdf_doc = new fs_pdf('a4', 'landscape', 'Courier');
+      	$pdf_doc->pdf->addInfo('Title', 'Facturas emitidas del '.$_POST['dfecha'].' al '.$_POST['hfecha'] );
+      	$pdf_doc->pdf->addInfo('Subject', 'Facturas emitidas del '.$_POST['dfecha'].' al '.$_POST['hfecha'] );
+      	$pdf_doc->pdf->addInfo('Author', $this->empresa->nombre);      
+
+      	$albaranes = $this->albaran_cli->all_desde_por_cliente($_POST['dfecha'], $_POST['hfecha'], $_POST['nombre_cliente']);
+      	
+      	if($albaranes) {
+    		$total_lineas = count($albaranes);
+         	$linea_actual = 0;
+         	$lppag = 31;
+         	$pagina = 1;
+         
+         	while($linea_actual < $total_lineas) {
+            	if($linea_actual > 0) {
+               		$pdf_doc->pdf->ezNewPage();
+               		$pagina++;
+            	}
+            
+            	/// encabezado
+            	$pdf_doc->pdf->ezText('<b>' . $this->empresa->nombre."</b> - Facturas de ventas del ".$_POST['dfecha']." al ".$_POST['hfecha'].":\n", 14);
+				$pdf_doc->pdf->ezText('<b>Cliente: </b>' .$alb_cliente->nombre. ' - ' . $alb_cliente->cifnif . "\n\n", 14);
+				
+            	/// tabla principal
+            	$pdf_doc->new_table();		
+            	
+				$pdf_doc->add_table_header(
+					array(
+					   'albaran' => '<b>Alb.</b>',
+					   'fecha' => '<b>Fecha</b>',
+					   'total_bruto' => '<b>Total Bruto</b>',
+					   'importe_iva' => '<b>Importe IVA</b>',
+					   'total_factura' => '<b>Total Factura</b>',
+					   'pago_senor' => '<b>Pago Señor</b>'
+					)
+            	);
+            	
+           		for($i = 0; $i < $lppag AND $linea_actual < $total_lineas; $i++) {
+               		$linea = array(
+                   		'albaran' => $albaranes[$linea_actual]->codigo,
+                   		'fecha' => $albaranes[$linea_actual]->fecha,
+                   		'total_bruto' => $this->_pc($albaranes[$linea_actual]->total_bruto),
+						'importe_iva' => $this->_pc($albaranes[$linea_actual]->importe_iva),
+						'total_factura' => $this->_pc($albaranes[$linea_actual]->total_factura),
+						'pago_senor' => $this->_pc($albaranes[$linea_actual]->pago_senor)
+               		);
+               		$sum_total_bruto += $albaranes[$linea_actual]->total_bruto;
+               		$sum_importe_iva += $albaranes[$linea_actual]->importe_iva;
+               		$sum_total_factura += $albaranes[$linea_actual]->total_factura;
+               		$sum_pago_senor += $albaranes[$linea_actual]->pago_senor;
+               		
+               		$pdf_doc->add_table_row($linea);
+               		$linea_actual++; 
+               	}			
+
+				$pdf_doc->save_table(
+				   array(
+					   'fontSize' => 8,
+					   'cols' => array(
+						   'total_bruto' => array('justification' => 'right'),
+						   'importe_iva' => array('justification' => 'right'),
+						   'total_factura' => array('justification' => 'right'),
+						   'pago_senor' => array('justification' => 'right')
+					   ),
+					   'shaded' => 0,
+					   'width' => 780
+				   )
+				);
+				$pdf_doc->pdf->ezText("\n", 10);
+				
+			} // fin while        
+     	} else {
+        	$pdf_doc->pdf->ezText($this->empresa->nombre." - Albaranes de ventas del ".$_POST['dfecha']." al ".$_POST['hfecha'].":\n\n", 14);
+        	$pdf_doc->pdf->ezText("Ninguna.\n\n", 14);
+      	}
+      
+    
+      	$pdf_doc->pdf->ezText("<b>TOTALES:</b>\n", 12);
+      	$pdf_doc->pdf->ezText("<b>Total Bruto:</b> " . $this->_pc($sum_total_bruto), 11);
+      	$pdf_doc->pdf->ezText("<b>Importe IVA:</b> " . $this->_pc($sum_importe_iva), 11);
+      	$pdf_doc->pdf->ezText("<b>Total Factura:</b> " . $this->_pc($sum_total_factura), 11);
+      	$pdf_doc->pdf->ezText("<b>Pago Señor:</b> " . $this->_pc($sum_pago_senor), 11);
+      	$pdf_doc->show();
+   	}
+   	
+   	
    private function pdf_albaranes_cli()
    {
    		$sum_total_bruto = 0;

@@ -161,6 +161,7 @@ class ventas_imprimir extends fs_controller
       $pdf_doc->pdf->addInfo('Author', $this->empresa->nombre);
       
       $lineas = $this->albaran->get_lineas();
+      
       if($lineas)
       {
          $linea_actual = 0;
@@ -208,7 +209,7 @@ class ventas_imprimir extends fs_controller
                array(
                    'campo1' => "<b>".ucfirst(FS_ALBARAN).":</b>",
                    'dato1' => $this->albaran->codigo,
-                   'campo2' => "<b>Fecha:</b>",
+                   'campo2' => "<b>Fecha Salida:</b>",
                    'dato2' => $this->albaran->fecha
                )
             );
@@ -252,6 +253,7 @@ class ventas_imprimir extends fs_controller
             $pdf_doc->new_table();
             $pdf_doc->add_table_header(
                array(
+               	  'fecha_entrada' => '<b>Fec. Entrada</b>',
                   'descripcion' => '<b>Descripción</b>',
                   'cantidad' => '<b>Cantidad</b>',
                   'pvp' => '<b>Precio/Unidad</b>',
@@ -274,7 +276,10 @@ class ventas_imprimir extends fs_controller
                else
                   $impuestos[$lineas[$linea_actual]->codimpuesto] += $lineas[$linea_actual]->pvptotal * $lineas[$linea_actual]->iva / 100;
                
+
+               
                $fila = array(
+               	  'fecha_entrada' => $lineas[$linea_actual]->fecha_entrada,
                   'descripcion' => $lineas[$linea_actual]->descripcion,
                   'cantidad' => $lineas[$linea_actual]->cantidad,
                   'pvp' => $this->show_precio($lineas[$linea_actual]->pvpunitario, $this->albaran->coddivisa),
